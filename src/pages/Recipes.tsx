@@ -89,7 +89,7 @@ const Recipes: React.FC = () => {
     
     try {
       setGenerating(true);
-      const data = await generateRecipeAI(ingredients); // Ahora envía array
+      const data = await generateRecipeAI(ingredients, 3); // Generar 3 recetas
       
       if (data && Array.isArray(data)) {
         // Convertir las 3 recetas de Groq al formato de la UI
