@@ -73,9 +73,10 @@ export const processReceipt = async (file: File) => {
 };
 
 // 3. Generar Receta
-export const generateRecipeAI = async (ingredient: string) => {
-  const response = await api.post('/generate-recipe', { ingredient });
-  // Backend returns { success: true, data: { title, ingredients, instructions } }
+export const generateRecipeAI = async (ingredients: string | string[]) => {
+  const ingredientsArray = Array.isArray(ingredients) ? ingredients : [ingredients];
+  const response = await api.post('/generate-recipe', { ingredients: ingredientsArray });
+  // Backend returns { success: true, data: [...recipes] }
   if (response.data.success && response.data.data) {
     return response.data.data;
   }

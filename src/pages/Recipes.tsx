@@ -5,14 +5,16 @@ import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 
 interface Recipe {
-  id: number;
+  id?: number;
   title: string;
-  mainIngredient: string;
-  prepTime: string;
+  mainIngredient?: string;
+  time?: string;
+  prepTime?: string;
   servings: number;
   difficulty: string;
-  saved: boolean;
-  instructions?: string;
+  saved?: boolean;
+  instructions?: string[] | string;
+  ingredients?: string[];
 }
 
 interface Product {
@@ -25,14 +27,14 @@ const Recipes: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [criticalProducts, setCriticalProducts] = useState<Product[]>([]);
-  const [selectedIngredient, setSelectedIngredient] = useState('');
+  const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]); // Ahora es array
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{ 
     title: string; 
     message: string; 
-    ingredient: string;
+    ingredients: string[];
   } | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
@@ -56,45 +58,57 @@ const Recipes: React.FC = () => {
   };
 
   const handleIngredientClick = (ingredient: string) => {
-    setSelectedIngredient(ingredient);
-    console.log('Setting confirm dialog for:', ingredient);
+    // Toggle: agregar o quitar ingrediente
+    setSelectedIngredients(prev => {
+      if (prev.includes(ingredient)) {
+        return prev.filter(i => i !== ingredient);
+      } else {
+        return [...prev, ingredient];
+      }
+    });
+  };
+
+  const handleGenerateRecipes = () => {
+    if (selectedIngredients.length === 0) {
+      setToast({ message: 'Selecciona al menos un ingrediente', type: 'warning' });
+      return;
+    }
+
     setConfirmDialog({
-      title: 'Generar Receta',
-      message: `¿Quieres generar una receta con ${ingredient}?`,
-      ingredient
+      title: 'Generar Recetas',
+      message: `¿Quieres generar recetas con: ${selectedIngredients.join(', ')}?`,
+      ingredients: selectedIngredients
     });
   };
 
   const handleGenerateRecipe = async () => {
     if (!confirmDialog) return;
     
-    const ingredient = confirmDialog.ingredient;
+    const ingredients = confirmDialog.ingredients;
     setConfirmDialog(null);
     
     try {
       setGenerating(true);
-      const data = await generateRecipeAI(ingredient);
+      const data = await generateRecipeAI(ingredients); // Ahora envía array
       
-      if (data) {
-        // Convertir el formato de la receta de Groq al formato de la UI
-        const instructions = Array.isArray(data.instructions) 
-          ? data.instructions.join(' ') 
-          : data.instructions || '';
-
-        const newRecipe: Recipe = {
-          id: Date.now(),
-          title: data.title || `Receta con ${ingredient}`,
-          mainIngredient: ingredient,
-          prepTime: '30 min',
-          servings: 4,
-          difficulty: 'Media',
+      if (data && Array.isArray(data)) {
+        // Convertir las 3 recetas de Groq al formato de la UI
+        const newRecipes: Recipe[] = data.map((recipe, index) => ({
+          id: Date.now() + index,
+          title: recipe.title || `Receta ${index + 1}`,
+          mainIngredient: ingredients[0],
+          time: recipe.time,
+          prepTime: recipe.time || '30 min',
+          servings: recipe.servings || 4,
+          difficulty: recipe.difficulty || 'Media',
           saved: false,
-          instructions: instructions
-        };
+          instructions: recipe.instructions,
+          ingredients: recipe.ingredients
+        }));
         
-        setRecipes([newRecipe, ...recipes]);
-        setSelectedIngredient('');
-        setToast({ message: '¡Receta generada exitosamente!', type: 'success' });
+        setRecipes([...newRecipes, ...recipes]);
+        setSelectedIngredients([]);
+        setToast({ message: `¡${newRecipes.length} recetas generadas exitosamente!`, type: 'success' });
       }
     } catch (error) {
       console.error('Error generando receta:', error);
@@ -125,7 +139,7 @@ const Recipes: React.FC = () => {
 
   const filteredRecipes = recipes?.filter(recipe =>
     recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recipe.mainIngredient.toLowerCase().includes(searchTerm.toLowerCase())
+    (recipe.mainIngredient && recipe.mainIngredient.toLowerCase().includes(searchTerm.toLowerCase()))
   ) || [];
 
   const getDifficultyColor = (difficulty: string) => {
@@ -163,7 +177,7 @@ const Recipes: React.FC = () => {
         ) : criticalProducts.length > 0 ? (
           <div>
             <p className="mb-3 text-purple-100">
-              Tienes {criticalProducts.length} productos próximos a vencer. Selecciona uno para generar una receta:
+              Tienes {criticalProducts.length} productos próximos a vencer. Selecciona uno o más para generar recetas:
             </p>
             <div className="flex flex-wrap gap-2 mb-4">
               {criticalProducts.map(product => (
@@ -171,8 +185,8 @@ const Recipes: React.FC = () => {
                   key={product.id}
                   onClick={() => handleIngredientClick(product.name)}
                   className={`px-4 py-2 rounded-lg transition-all ${
-                    selectedIngredient === product.name
-                      ? 'bg-white text-purple-600 font-semibold'
+                    selectedIngredients.includes(product.name)
+                      ? 'bg-white text-purple-600 font-semibold ring-2 ring-white'
                       : 'bg-white/20 hover:bg-white/30'
                   }`}
                 >
@@ -180,14 +194,45 @@ const Recipes: React.FC = () => {
                 </button>
               ))}
             </div>
-            <div className="text-sm text-purple-100">
-              {generating && (
-                <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Generando receta con IA...</span>
+            
+            {selectedIngredients.length > 0 && (
+              <div className="bg-white/20 rounded-lg p-3 mb-3">
+                <p className="text-sm font-semibold mb-2">Ingredientes seleccionados:</p>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {selectedIngredients.map((ing, idx) => (
+                    <span key={idx} className="bg-white/30 px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                      {ing}
+                      <button onClick={() => handleIngredientClick(ing)} className="hover:bg-white/20 rounded-full p-1">
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
                 </div>
-              )}
-            </div>
+                <button
+                  onClick={handleGenerateRecipes}
+                  disabled={generating}
+                  className="w-full bg-white text-purple-600 font-semibold py-3 rounded-lg hover:bg-purple-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {generating ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Generando 3 recetas con IA...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      Generar 3 Recetas
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+            
+            {selectedIngredients.length === 0 && (
+              <div className="text-sm text-purple-100">
+                💡 Tip: Puedes seleccionar varios ingredientes para recetas más completas
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-purple-100">
