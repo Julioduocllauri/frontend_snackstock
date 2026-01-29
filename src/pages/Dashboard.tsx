@@ -63,8 +63,8 @@ const Dashboard: React.FC = () => {
     setConfirmDialog(null);
     
     try {
-      const generatedRecipe = await generateRecipeAI(ingredient);
-      setRecipe(generatedRecipe);
+      const generatedRecipes = await generateRecipeAI(ingredient, 1); // Generar solo 1 receta
+      setRecipe(generatedRecipes[0]); // Tomar la primera receta
       setToast({ message: '¡Receta generada exitosamente!', type: 'success' });
     } catch (error) {
       setToast({ message: 'Error generando receta. Revisa que el Backend tenga la Key de Groq.', type: 'error' });
