@@ -1,0 +1,8 @@
+
+{
+  "name": "SnackStock",
+  "description": "Una aplicación amigable de gestión de despensa que te ayuda a reducir el desperdicio y cocinar de forma inteligente con recetas generadas por IA.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

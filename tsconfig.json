@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    /* MODO RELAJADO (Esto convierte TS en JS básicamente) */
+    "strict": false, // <--- IMPORTANTE: Apaga el modo estricto
+    "noImplicitAny": false, // <--- IMPORTANTE: Permite variables sin tipo
+    "noUnusedLocals": false, // <--- No molesta por variables sin usar
+    "noUnusedParameters": false, // <--- No molesta por parámetros sin usar
+    "noFallthroughCasesInSwitch": false
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
