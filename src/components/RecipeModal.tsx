@@ -46,7 +46,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose })
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold text-slate-800 border-b pb-2">Ingredientes</h3>
                   <ul className="space-y-2">
-                    {recipe.ingredients.map((ing, idx) => (
+                    {(Array.isArray(recipe.ingredients) ? recipe.ingredients : []).map((ing, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-slate-600">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0"></span>
                         {ing}
@@ -58,7 +58,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose })
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold text-slate-800 border-b pb-2">Preparación</h3>
                   <ol className="space-y-4">
-                    {recipe.instructions.map((step, idx) => (
+                    {(Array.isArray(recipe.instructions) ? recipe.instructions : []).map((step, idx) => (
                       <li key={idx} className="flex gap-4 group">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold shrink-0 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                           {idx + 1}
