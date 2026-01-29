@@ -12,6 +12,8 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [recipe, setRecipe] = useState<any>(null);
+  const [recipes, setRecipes] = useState<any[]>([]); // Para las 3 recetas generadas
+  const [isGenerating, setIsGenerating] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{ 
     title: string; 
@@ -63,18 +65,23 @@ const Dashboard: React.FC = () => {
     setConfirmDialog(null);
     
     try {
-      const generatedRecipes = await generateRecipeAI(ingredient, 1); // Generar solo 1 receta
-      const recipeData = generatedRecipes[0];
-      // Asegurar que tenga la estructura correcta
-      setRecipe({
-        ...recipeData,
-        prepTime: recipeData.time || recipeData.prepTime || '30 min',
-        ingredients: recipeData.ingredients || [],
-        instructions: recipeData.instructions || []
-      });
-      setToast({ message: '¡Receta generada exitosamente!', type: 'success' });
+      setIsGenerating(true);
+      const generatedRecipes = await generateRecipeAI(ingredient, 3); // Generar 3 recetas
+      
+      // Mapear las recetas con la estructura correcta
+      const mappedRecipes = generatedRecipes.map((r: any) => ({
+        ...r,
+        prepTime: r.time || r.prepTime || '30 min',
+        ingredients: r.ingredients || [],
+        instructions: r.instructions || []
+      }));
+      
+      setRecipes(mappedRecipes);
+      setToast({ message: '¡3 recetas generadas! Elige una para ver los detalles.', type: 'success' });
     } catch (error) {
       setToast({ message: 'Error generando receta. Revisa que el Backend tenga la Key de Groq.', type: 'error' });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -119,10 +126,54 @@ const Dashboard: React.FC = () => {
         </div>
       </section>
 
+      {/* SECCIÓN DE RECETAS GENERADAS */}
+      {recipes.length > 0 && (
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold text-slate-800">
+            Recetas Generadas - Elige una
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {recipes.map((r, idx) => (
+              <div
+                key={idx}
+                onClick={() => setRecipe(r)}
+                className="bg-white p-6 rounded-2xl border-2 border-slate-200 hover:border-blue-500 cursor-pointer transition-all hover:shadow-lg"
+              >
+                <h3 className="text-xl font-bold text-slate-800 mb-2">{r.title}</h3>
+                <div className="text-sm text-slate-600 space-y-1">
+                  <p>⏱️ {r.time || r.prepTime}</p>
+                  <p>👥 {r.servings} personas</p>
+                  <p className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full inline-block text-xs font-semibold">
+                    {r.difficulty}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => setRecipes([])}
+            className="px-6 py-2 bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors"
+          >
+            Cerrar recetas
+          </button>
+        </section>
+      )}
+
+      {/* LOADING RECIPES */}
+      {isGenerating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-600 font-medium">Generando 3 recetas...</p>
+          </div>
+        </div>
+      )}
+
       {/* MODAL DE RECETA */}
       {recipe && (
         <RecipeModal 
           recipe={recipe}
+          isLoading={false}
           onClose={() => setRecipe(null)}
         />
       )}
