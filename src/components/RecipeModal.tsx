@@ -35,10 +35,10 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose })
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm font-semibold uppercase tracking-wider mb-2">
                   <ChefHat size={14} /> Receta Recomendada
                 </div>
-                <h2 className="text-3xl font-bold text-slate-800">{recipe.title}</h2>
+                <h2 className="text-3xl font-bold text-slate-800">{recipe.title || 'Receta'}</h2>
                 <div className="flex items-center justify-center gap-2 text-slate-500">
                   <Clock size={16} />
-                  <span>Listo en {recipe.prepTime}</span>
+                  <span>Listo en {recipe.prepTime || recipe.time || '30 min'}</span>
                 </div>
               </div>
 

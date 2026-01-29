@@ -64,7 +64,14 @@ const Dashboard: React.FC = () => {
     
     try {
       const generatedRecipes = await generateRecipeAI(ingredient, 1); // Generar solo 1 receta
-      setRecipe(generatedRecipes[0]); // Tomar la primera receta
+      const recipeData = generatedRecipes[0];
+      // Asegurar que tenga la estructura correcta
+      setRecipe({
+        ...recipeData,
+        prepTime: recipeData.time || recipeData.prepTime || '30 min',
+        ingredients: recipeData.ingredients || [],
+        instructions: recipeData.instructions || []
+      });
       setToast({ message: '¡Receta generada exitosamente!', type: 'success' });
     } catch (error) {
       setToast({ message: 'Error generando receta. Revisa que el Backend tenga la Key de Groq.', type: 'error' });
