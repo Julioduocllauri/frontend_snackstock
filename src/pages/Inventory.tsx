@@ -3,6 +3,7 @@ import { Search, Plus, Trash2, Edit2, Package, X } from 'lucide-react';
 import { getPantryItems, Product, updateProduct, deleteProduct, createProduct } from '../services/api';
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ContextualTip from '../components/ContextualTip';
 
 const Inventory: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,9 +20,16 @@ const Inventory: React.FC = () => {
     product: Product | null;
     isNew: boolean;
   }>({ product: null, isNew: false });
+  const [showInventoryTip, setShowInventoryTip] = useState(false);
 
   useEffect(() => {
     loadData();
+    
+    // Mostrar tip si es la primera vez
+    const inventoryTipShown = localStorage.getItem('inventoryTipShown');
+    if (!inventoryTipShown) {
+      setTimeout(() => setShowInventoryTip(true), 800);
+    }
   }, []);
 
   const loadData = async () => {
@@ -122,6 +130,19 @@ const Inventory: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
+      {/* CONTEXTUAL TIP - INVENTORY */}
+      <ContextualTip
+        isOpen={showInventoryTip}
+        onClose={() => {
+          setShowInventoryTip(false);
+          localStorage.setItem('inventoryTipShown', 'true');
+        }}
+        title="Gestiona tu inventario 📦"
+        description="Aquí puedes ver, editar y eliminar productos. Usa los filtros para buscar por categoría. Marca productos como consumidos para mejorar tus estadísticas."
+        icon={<Package className="w-6 h-6" />}
+        position="top-right"
+      />
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 mb-2">Inventario</h1>
