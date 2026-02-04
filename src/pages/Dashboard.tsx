@@ -43,6 +43,7 @@ const Dashboard: React.FC = () => {
         setTimeout(() => setShowDashboardTip(true), 1000);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseDashboardTip = () => {
