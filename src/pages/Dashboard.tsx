@@ -35,18 +35,26 @@ const Dashboard: React.FC = () => {
 
   // Manejar onboarding y tooltips - SIMPLIFICADO
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      console.log('⚠️ No hay usuario todavía, esperando...');
+      return;
+    }
 
     console.log('=== DASHBOARD: Usuario cargado ===');
     console.log('ID:', user.id);
     console.log('Email:', user.email);
     console.log('Onboarding completado:', user.onboarding_completed);
+    console.log('Tipo de onboarding_completed:', typeof user.onboarding_completed);
+    console.log('Estado actual showOnboarding:', showOnboarding);
     console.log('================================');
 
     // Si NO ha completado onboarding, mostrarlo
     if (user.onboarding_completed === false || user.onboarding_completed === undefined) {
       console.log('🎯 Mostrando modal de onboarding...');
-      setTimeout(() => setShowOnboarding(true), 500);
+      setTimeout(() => {
+        console.log('⏰ Ejecutando setTimeout para mostrar onboarding');
+        setShowOnboarding(true);
+      }, 500);
     } 
     // Si YA completó onboarding, mostrar tip del dashboard (solo primera vez)
     else {
@@ -55,6 +63,8 @@ const Dashboard: React.FC = () => {
       if (!dashboardTipShown) {
         console.log('📌 Mostrando tooltip del dashboard...');
         setTimeout(() => setShowDashboardTip(true), 800);
+      } else {
+        console.log('ℹ️ Tooltip del dashboard ya fue mostrado anteriormente');
       }
     }
   }, [user]);
