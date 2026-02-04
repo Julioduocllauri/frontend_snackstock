@@ -137,8 +137,8 @@ const Inventory: React.FC = () => {
           setShowInventoryTip(false);
           localStorage.setItem('inventoryTipShown', 'true');
         }}
-        title="Gestiona tu inventario 📦"
-        description="Aquí puedes ver, editar y eliminar productos. Usa los filtros para buscar por categoría. Marca productos como consumidos para mejorar tus estadísticas."
+        title="¿Cómo usar el inventario? 📦"
+        description="Aquí verás todos tus productos. Puedes EDITAR haciendo clic en el lápiz, o ELIMINAR con la X. Cuando consumas un producto, márcalo como 'Consumido' para que se registre en tus estadísticas. Usa los filtros para buscar más fácil."
         icon={<Package className="w-6 h-6" />}
         position="center"
       />

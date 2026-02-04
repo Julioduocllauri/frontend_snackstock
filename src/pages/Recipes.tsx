@@ -170,8 +170,8 @@ const Recipes: React.FC = () => {
       <ContextualTip
         isOpen={showRecipesTip}
         onClose={handleCloseRecipesTip}
-        title="¡Genera recetas con IA! 🧑‍🍳"
-        description="Selecciona ingredientes que estén próximos a vencer y genera recetas deliciosas con inteligencia artificial. Nunca más desperdicies comida."
+        title="¿Cómo generar recetas? 👨‍🍳"
+        description="Esta sección te muestra productos que están próximos a vencer. ¡No los desperdicies! Selecciona los ingredientes que quieras usar (haz clic sobre ellos) y presiona 'Generar Recetas'. La IA creará 3 recetas deliciosas para ti."
         icon={<ChefHat className="w-6 h-6" />}
         position="center"
       />
