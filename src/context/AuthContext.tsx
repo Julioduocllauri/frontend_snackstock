@@ -5,6 +5,7 @@ interface User {
   email: string;
   name: string;
   avatar?: string;
+  onboarding_completed?: boolean;
 }
 
 interface AuthContextType {
@@ -61,7 +62,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: data.data.id,
         email: data.data.email,
         name: data.data.name,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.data.name}`
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.data.name}`,
+        onboarding_completed: data.data.onboarding_completed
       };
       
       setUser(loggedUser);
