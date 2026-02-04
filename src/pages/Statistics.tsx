@@ -2,15 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Package, AlertTriangle, BarChart3, Calendar, Flame, Loader2 } from 'lucide-react';
 import { getStatistics, Statistics as StatsData } from '../services/statistics';
 import Toast from '../components/Toast';
+import ContextualTip from '../components/ContextualTip';
 
 const Statistics: React.FC = () => {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [showStatisticsTip, setShowStatisticsTip] = useState(false);
 
   useEffect(() => {
     loadStatistics();
+    
+    // Mostrar tip de estadísticas en la primera visita
+    const statisticsTipShown = localStorage.getItem('statisticsTipShown');
+    if (!statisticsTipShown) {
+      setTimeout(() => setShowStatisticsTip(true), 800);
+    }
   }, []);
+
+  const handleCloseStatisticsTip = () => {
+    setShowStatisticsTip(false);
+    localStorage.setItem('statisticsTipShown', 'true');
+  };
 
   const loadStatistics = async () => {
     try {
@@ -49,6 +62,16 @@ const Statistics: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
+      {/* CONTEXTUAL TIP - ESTADÍSTICAS */}
+      <ContextualTip
+        isOpen={showStatisticsTip}
+        onClose={handleCloseStatisticsTip}
+        title="¡Analiza tus hábitos! 📊"
+        description="Descubre cuántas calorías consumes, tus productos favoritos y cuánto desperdicias. Mejora tus hábitos alimenticios con datos reales."
+        icon={<BarChart3 className="w-6 h-6" />}
+        position="top-left"
+      />
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">

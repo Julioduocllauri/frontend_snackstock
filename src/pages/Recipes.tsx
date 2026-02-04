@@ -3,6 +3,7 @@ import { ChefHat, Clock, Users, Sparkles, Search, Heart, Loader2, X } from 'luci
 import { getPantryItems, generateRecipeAI } from '../services/api';
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ContextualTip from '../components/ContextualTip';
 
 interface Recipe {
   id?: number;
@@ -37,10 +38,22 @@ const Recipes: React.FC = () => {
     ingredients: string[];
   } | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [showRecipesTip, setShowRecipesTip] = useState(false);
 
   useEffect(() => {
     loadCriticalProducts();
+    
+    // Mostrar tip de recetas en la primera visita
+    const recipesTipShown = localStorage.getItem('recipesTipShown');
+    if (!recipesTipShown) {
+      setTimeout(() => setShowRecipesTip(true), 800);
+    }
   }, []);
+
+  const handleCloseRecipesTip = () => {
+    setShowRecipesTip(false);
+    localStorage.setItem('recipesTipShown', 'true');
+  };
 
   const loadCriticalProducts = async () => {
     try {
@@ -153,6 +166,16 @@ const Recipes: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
+      {/* CONTEXTUAL TIP - RECETAS */}
+      <ContextualTip
+        isOpen={showRecipesTip}
+        onClose={handleCloseRecipesTip}
+        title="¡Genera recetas con IA! 🧑‍🍳"
+        description="Selecciona ingredientes que estén próximos a vencer y genera recetas deliciosas con inteligencia artificial. Nunca más desperdicies comida."
+        icon={<ChefHat className="w-6 h-6" />}
+        position="top-left"
+      />
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
