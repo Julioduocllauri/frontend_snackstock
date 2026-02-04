@@ -49,28 +49,29 @@ const Statistics: React.FC = () => {
     );
   }
 
-  if (!stats) {
-    return (
-      <div className="max-w-7xl mx-auto p-4 md:p-8">
-        {/* CONTEXTUAL TIP - ESTADÍSTICAS */}
-        <ContextualTip
-          isOpen={showStatisticsTip}
-          onClose={handleCloseStatisticsTip}
-          title="¿Qué son las estadísticas? 📊"
-          description="Aquí puedes ver cuántos productos tienes, cuántas calorías consumes al día, cuáles son tus productos favoritos y cuánto desperdicias. Usa esta información para mejorar tus hábitos de compra y alimentación."
-          icon={<BarChart3 className="w-6 h-6" />}
-          position="center"
-        />
+  // Crear datos por defecto si no hay estadísticas
+  const defaultStats = {
+    user: {
+      days_in_app: 0,
+      total_consumed: 0,
+      total_wasted: 0
+    },
+    inventory: {
+      total_products: 0,
+      critical_products: 0
+    },
+    calories: {
+      today: 0,
+      week: 0,
+      month: 0,
+      average_daily: 0
+    },
+    top_products: [],
+    consumption_by_category: []
+  };
 
-        <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-2xl p-8 text-center">
-          <BarChart3 className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-slate-800 mb-2">¡Aún no tienes estadísticas!</h3>
-          <p className="text-slate-600 mb-4">Comienza agregando productos a tu inventario y marcándolos como consumidos.</p>
-          <p className="text-sm text-slate-500">Tus estadísticas aparecerán aquí automáticamente.</p>
-        </div>
-      </div>
-    );
-  }
+  const displayStats = stats || defaultStats;
+  const hasData = stats !== null;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
@@ -84,6 +85,17 @@ const Statistics: React.FC = () => {
         position="center"
       />
 
+      {/* Mensaje de ayuda cuando no hay datos */}
+      {!hasData && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+          <BarChart3 className="w-8 h-8 text-blue-500 flex-shrink-0" />
+          <div>
+            <p className="text-blue-800 font-semibold">¡Empieza a registrar tus productos!</p>
+            <p className="text-blue-600 text-sm">Agrega productos a tu inventario y márcalos como consumidos para ver tus estadísticas.</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
@@ -93,7 +105,7 @@ const Statistics: React.FC = () => {
         <p className="text-slate-500">Analiza tus patrones de consumo y optimiza tu despensa</p>
         <div className="flex items-center gap-2 mt-2 text-sm text-slate-600">
           <Calendar size={16} />
-          <span>Llevas {stats.user.days_in_app} días usando SnackStock</span>
+          <span>Llevas {displayStats.user.days_in_app} días usando SnackStock</span>
         </div>
       </div>
 
@@ -104,7 +116,7 @@ const Statistics: React.FC = () => {
             <Package className="text-blue-500" size={24} />
             <span className="text-xs font-medium text-slate-500 uppercase">Total Productos</span>
           </div>
-          <p className="text-3xl font-bold text-slate-800">{stats.inventory.total_products}</p>
+          <p className="text-3xl font-bold text-slate-800">{displayStats.inventory.total_products}</p>
           <p className="text-sm text-slate-500 mt-1">En inventario</p>
         </div>
 
@@ -113,7 +125,7 @@ const Statistics: React.FC = () => {
             <AlertTriangle className="text-red-500" size={24} />
             <span className="text-xs font-medium text-slate-500 uppercase">Críticos</span>
           </div>
-          <p className="text-3xl font-bold text-red-600">{stats.inventory.critical_products}</p>
+          <p className="text-3xl font-bold text-red-600">{displayStats.inventory.critical_products}</p>
           <p className="text-sm text-slate-500 mt-1">Por vencer pronto</p>
         </div>
 
@@ -122,7 +134,7 @@ const Statistics: React.FC = () => {
             <Flame className="text-orange-500" size={24} />
             <span className="text-xs font-medium text-slate-500 uppercase">Calorías Hoy</span>
           </div>
-          <p className="text-3xl font-bold text-slate-800">{stats.calories.today}</p>
+          <p className="text-3xl font-bold text-slate-800">{displayStats.calories.today}</p>
           <p className="text-sm text-slate-500 mt-1">kcal consumidas</p>
         </div>
 
@@ -131,7 +143,7 @@ const Statistics: React.FC = () => {
             <Package className="text-white" size={24} />
             <span className="text-xs font-medium text-green-100 uppercase">Salvados</span>
           </div>
-          <p className="text-3xl font-bold">{stats.user.total_consumed}</p>
+          <p className="text-3xl font-bold">{displayStats.user.total_consumed}</p>
           <p className="text-sm text-green-100 mt-1">Productos consumidos</p>
         </div>
       </div>
@@ -143,7 +155,7 @@ const Statistics: React.FC = () => {
             <Flame className="text-orange-600" size={20} />
             <span className="text-sm font-semibold text-orange-800">Calorías Semanales</span>
           </div>
-          <p className="text-2xl font-bold text-orange-900">{stats.calories.week} kcal</p>
+          <p className="text-2xl font-bold text-orange-900">{displayStats.calories.week} kcal</p>
           <p className="text-xs text-orange-700 mt-1">Últimos 7 días</p>
         </div>
 
@@ -152,7 +164,7 @@ const Statistics: React.FC = () => {
             <Flame className="text-purple-600" size={20} />
             <span className="text-sm font-semibold text-purple-800">Calorías Mensuales</span>
           </div>
-          <p className="text-2xl font-bold text-purple-900">{stats.calories.month} kcal</p>
+          <p className="text-2xl font-bold text-purple-900">{displayStats.calories.month} kcal</p>
           <p className="text-xs text-purple-700 mt-1">Últimos 30 días</p>
         </div>
 
@@ -161,7 +173,7 @@ const Statistics: React.FC = () => {
             <TrendingUp className="text-blue-600" size={20} />
             <span className="text-sm font-semibold text-blue-800">Promedio Diario</span>
           </div>
-          <p className="text-2xl font-bold text-blue-900">{stats.calories.daily_average} kcal</p>
+          <p className="text-2xl font-bold text-blue-900">{displayStats.calories.daily_average} kcal</p>
           <p className="text-xs text-blue-700 mt-1">Por día este mes</p>
         </div>
       </div>
@@ -178,10 +190,10 @@ const Statistics: React.FC = () => {
           </div>
           
           <div className="p-6 space-y-4">
-            {stats.top_consumed.length === 0 ? (
+            {displayStats.top_consumed.length === 0 ? (
               <p className="text-slate-500 text-center py-4">No hay datos de consumo aún</p>
             ) : (
-              stats.top_consumed.map((product, index) => (
+              displayStats.top_consumed.map((product, index) => (
                 <div key={product.name} className="flex items-center gap-4">
                   <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold flex items-center justify-center text-sm">
                     {index + 1}
@@ -225,10 +237,10 @@ const Statistics: React.FC = () => {
           </div>
           
           <div className="p-6 space-y-4">
-            {stats.least_consumed.length === 0 ? (
+            {displayStats.least_consumed.length === 0 ? (
               <p className="text-slate-500 text-center py-4">Todos los productos se consumen bien</p>
             ) : (
-              stats.least_consumed.map((product, index) => (
+              displayStats.least_consumed.map((product, index) => (
                 <div key={product.product_name} className="flex items-center gap-4">
                   <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 font-bold flex items-center justify-center text-sm">
                     {index + 1}
@@ -260,13 +272,13 @@ const Statistics: React.FC = () => {
       </div>
 
       {/* Wasted Products */}
-      {stats.wasted_products.length > 0 && (
+      {displayStats.wasted_products.length > 0 && (
         <div className="mt-6 bg-red-50 border border-red-200 rounded-2xl p-6">
           <h3 className="font-bold text-red-800 mb-3 flex items-center gap-2">
             ⚠️ Productos Desperdiciados
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {stats.wasted_products.map((product) => (
+            {displayStats.wasted_products.map((product) => (
               <div key={product.name} className="bg-white rounded-lg p-3 border border-red-200">
                 <p className="font-semibold text-slate-800">{product.name}</p>
                 <p className="text-xs text-slate-500">{product.category}</p>
@@ -278,13 +290,13 @@ const Statistics: React.FC = () => {
       )}
 
       {/* Recommendations */}
-      {stats.recommendations.length > 0 && (
+      {displayStats.recommendations.length > 0 && (
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-6">
           <h3 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
             💡 Recomendaciones
           </h3>
           <ul className="space-y-2 text-sm">
-            {stats.recommendations.map((rec, index) => (
+            {displayStats.recommendations.map((rec, index) => (
               <li key={index} className={`
                 ${rec.type === 'warning' ? 'text-orange-700' : ''}
                 ${rec.type === 'success' ? 'text-green-700' : ''}
@@ -302,19 +314,19 @@ const Statistics: React.FC = () => {
         <h3 className="font-bold text-slate-800 mb-4">Resumen General</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <p className="text-2xl font-bold text-slate-800">{stats.user.total_added}</p>
+            <p className="text-2xl font-bold text-slate-800">{displayStats.user.total_added}</p>
             <p className="text-xs text-slate-600">Productos Agregados</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-green-600">{stats.user.total_consumed}</p>
+            <p className="text-2xl font-bold text-green-600">{displayStats.user.total_consumed}</p>
             <p className="text-xs text-slate-600">Consumidos</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-red-600">{stats.user.total_wasted}</p>
+            <p className="text-2xl font-bold text-red-600">{displayStats.user.total_wasted}</p>
             <p className="text-xs text-slate-600">Desperdiciados</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-orange-600">{stats.inventory.waste_rate}%</p>
+            <p className="text-2xl font-bold text-orange-600">{displayStats.inventory.waste_rate}%</p>
             <p className="text-xs text-slate-600">Tasa de Desperdicio</p>
           </div>
         </div>
