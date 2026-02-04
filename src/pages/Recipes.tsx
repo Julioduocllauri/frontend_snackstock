@@ -173,7 +173,7 @@ const Recipes: React.FC = () => {
         title="¡Genera recetas con IA! 🧑‍🍳"
         description="Selecciona ingredientes que estén próximos a vencer y genera recetas deliciosas con inteligencia artificial. Nunca más desperdicies comida."
         icon={<ChefHat className="w-6 h-6" />}
-        position="top-left"
+        position="center"
       />
 
       {/* Header */}

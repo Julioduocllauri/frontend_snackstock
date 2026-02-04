@@ -30,21 +30,23 @@ const Dashboard: React.FC = () => {
   // Cargar datos al iniciar
   useEffect(() => {
     loadData();
-    
-    // Verificar si debe mostrar onboarding
-    const onboardingCompleted = user?.onboarding_completed;
-    if (!onboardingCompleted) {
-      // Pequeño delay para que cargue suavemente
-      setTimeout(() => setShowOnboarding(true), 500);
-    } else {
-      // Si ya completó onboarding, mostrar tip del dashboard
-      const dashboardTipShown = localStorage.getItem('dashboardTipShown');
-      if (!dashboardTipShown) {
-        setTimeout(() => setShowDashboardTip(true), 1000);
-      }
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Manejar onboarding y tooltips
+  useEffect(() => {
+    // Verificar si debe mostrar onboarding
+    const onboardingCompleted = user?.onboarding_completed;
+    const dashboardTipShown = localStorage.getItem('dashboardTipShown');
+    
+    if (!onboardingCompleted && user) {
+      // Pequeño delay para que cargue suavemente
+      setTimeout(() => setShowOnboarding(true), 500);
+    } else if (onboardingCompleted && !dashboardTipShown) {
+      // Si ya completó onboarding y no ha visto el tip del dashboard
+      setTimeout(() => setShowDashboardTip(true), 1000);
+    }
+  }, [user?.onboarding_completed, user]);
 
   const handleCloseDashboardTip = () => {
     setShowDashboardTip(false);
@@ -126,7 +128,7 @@ const Dashboard: React.FC = () => {
         title="¡Escanea tu primera boleta! 📸"
         description="Usa el botón de arriba para tomar una foto de tu ticket del supermercado. La IA extraerá automáticamente todos los productos y los agregará a tu inventario."
         icon={<Camera className="w-6 h-6" />}
-        position="top-right"
+        position="center"
       />
 
       {/* HERO SECTION - ESCÁNER */}
