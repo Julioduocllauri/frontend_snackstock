@@ -115,20 +115,20 @@ const Dashboard: React.FC = () => {
       {/* ONBOARDING MODAL */}
       <OnboardingModal 
         isOpen={showOnboarding} 
-        onClose={handleOnboardingClose}
+        onClose={() => setShowOnboarding(false)}
         userId={user?.id || ''}
-      />
-
-      {/* GUIDED TOUR */}
-      <GuidedTour 
-        isOpen={showGuidedTour} 
-        onClose={() => setShowGuidedTour(false)}
       />
 
       {/* CONTEXTUAL TIP - DASHBOARD */}
       <ContextualTip
-        isOpen={s() => setShowOnboarding(false)}
-        userId={user?.id || ''
+        isOpen={showDashboardTip}
+        onClose={handleCloseDashboardTip}
+        title="¡Escanea tu primera boleta! 📸"
+        description="Usa el botón de arriba para tomar una foto de tu ticket del supermercado. La IA extraerá automáticamente todos los productos y los agregará a tu inventario."
+        icon={<Camera className="w-6 h-6" />}
+        position="top-right"
+      />
+
       {/* HERO SECTION - ESCÁNER */}
       <div id="scan-section">
         <ScanSection onScan={handleScan} isScanning={isScanning} />
