@@ -63,18 +63,24 @@ const GuidedTour: React.FC<GuidedTourProps> = ({ isOpen, onClose }) => {
 
     const updatePosition = () => {
       const element = document.getElementById(step.target);
+      console.log('Buscando elemento:', step.target, 'Encontrado:', element);
       if (element) {
         const rect = element.getBoundingClientRect();
+        console.log('Posición del elemento:', rect);
         setElementPosition({
           top: rect.top + window.scrollY,
           left: rect.left + window.scrollX,
           width: rect.width,
           height: rect.height
         });
+      } else {
+        console.warn('Elemento no encontrado:', step.target);
       }
     };
 
-    updatePosition();
+    // Dar tiempo para que el DOM se renderice
+    setTimeout(updatePosition, 100);
+    
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition);
 
