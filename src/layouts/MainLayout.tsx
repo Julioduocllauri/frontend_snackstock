@@ -126,6 +126,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     setCurrentPage(item.id);
                     setSidebarOpen(false);
                   }}
+                  htmlId={item.htmlId}
                 />
               ))}
             </nav>
