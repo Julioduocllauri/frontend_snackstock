@@ -52,9 +52,21 @@ const Statistics: React.FC = () => {
   if (!stats) {
     return (
       <div className="max-w-7xl mx-auto p-4 md:p-8">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 text-center">
-          <p className="text-yellow-800">No hay datos suficientes para mostrar estadísticas.</p>
-          <p className="text-yellow-600 text-sm mt-2">Comienza agregando productos y consumiéndolos.</p>
+        {/* CONTEXTUAL TIP - ESTADÍSTICAS */}
+        <ContextualTip
+          isOpen={showStatisticsTip}
+          onClose={handleCloseStatisticsTip}
+          title="¿Qué son las estadísticas? 📊"
+          description="Aquí puedes ver cuántos productos tienes, cuántas calorías consumes al día, cuáles son tus productos favoritos y cuánto desperdicias. Usa esta información para mejorar tus hábitos de compra y alimentación."
+          icon={<BarChart3 className="w-6 h-6" />}
+          position="center"
+        />
+
+        <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-dashed border-blue-300 rounded-2xl p-8 text-center">
+          <BarChart3 className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-slate-800 mb-2">¡Aún no tienes estadísticas!</h3>
+          <p className="text-slate-600 mb-4">Comienza agregando productos a tu inventario y marcándolos como consumidos.</p>
+          <p className="text-sm text-slate-500">Tus estadísticas aparecerán aquí automáticamente.</p>
         </div>
       </div>
     );

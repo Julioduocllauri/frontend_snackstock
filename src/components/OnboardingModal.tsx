@@ -85,12 +85,14 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
   const completeOnboarding = async () => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-      console.log('Completando onboarding para usuario:', userId);
+      console.log('🔑 Completando onboarding para usuario:', userId);
       await axios.post(`${API_URL}/auth/complete-onboarding/${userId}`);
-      console.log('Onboarding completado exitosamente');
+      console.log('✅ Onboarding completado exitosamente');
       
       // Actualizar el usuario en el contexto
       updateUser({ onboarding_completed: true });
+      
+      console.log('💾 Estado localStorage dashboardTipShown:', localStorage.getItem('dashboardTipShown'));
       
       onClose();
     } catch (error) {
