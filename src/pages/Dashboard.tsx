@@ -41,9 +41,13 @@ const Dashboard: React.FC = () => {
 
   // Mostrar tour guiado después de cerrar onboarding
   const handleOnboardingClose = () => {
+    console.log('Onboarding cerrado, mostrando tour guiado...');
     setShowOnboarding(false);
     // Mostrar el tour guiado después de un pequeño delay
-    setTimeout(() => setShowGuidedTour(true), 800);
+    setTimeout(() => {
+      console.log('Activando tour guiado');
+      setShowGuidedTour(true);
+    }, 800);
   };
 
   const loadData = async () => {

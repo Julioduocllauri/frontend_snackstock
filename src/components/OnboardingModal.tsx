@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Package, Camera, ChefHat, BarChart3, ArrowRight } from 'lucide-react';
+import { X, Package, Camera, ChefHat, BarChart3, ArrowRight, Sparkles, ShoppingBag } from 'lucide-react';
 import axios from 'axios';
 
 interface OnboardingModalProps {
@@ -14,8 +14,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
   const steps = [
     {
       icon: (
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
-          <span className="text-5xl">🎉</span>
+        <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <Sparkles className="w-16 h-16 text-white" strokeWidth={2.5} />
         </div>
       ),
       title: "¡Bienvenido a SnackStock!",
@@ -24,8 +24,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
     },
     {
       icon: (
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
-          <span className="text-5xl">📸</span>
+        <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <Camera className="w-16 h-16 text-white" strokeWidth={2.5} />
         </div>
       ),
       title: "Escanea tus Boletas",
@@ -34,8 +34,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
     },
     {
       icon: (
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
-          <span className="text-5xl">📦</span>
+        <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <Package className="w-16 h-16 text-white" strokeWidth={2.5} />
         </div>
       ),
       title: "Gestiona tu Inventario",
@@ -44,8 +44,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
     },
     {
       icon: (
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
-          <span className="text-5xl">👨‍🍳</span>
+        <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <ChefHat className="w-16 h-16 text-white" strokeWidth={2.5} />
         </div>
       ),
       title: "Genera Recetas",
@@ -54,8 +54,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
     },
     {
       icon: (
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-red-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
-          <span className="text-5xl">📊</span>
+        <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-red-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <BarChart3 className="w-16 h-16 text-white" strokeWidth={2.5} />
         </div>
       ),
       title: "Analiza tus Hábitos",
@@ -83,7 +83,9 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
   const completeOnboarding = async () => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      console.log('Completando onboarding para usuario:', userId);
       await axios.post(`${API_URL}/auth/complete-onboarding/${userId}`);
+      console.log('Onboarding completado exitosamente');
       onClose();
     } catch (error) {
       console.error('Error completando onboarding:', error);

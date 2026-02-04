@@ -17,6 +17,12 @@ const GuidedTour: React.FC<GuidedTourProps> = ({ isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [elementPosition, setElementPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
 
+  useEffect(() => {
+    if (isOpen) {
+      console.log('GuidedTour montado y visible');
+    }
+  }, [isOpen]);
+
   const tourSteps: TourStep[] = [
     {
       target: 'scan-section',
