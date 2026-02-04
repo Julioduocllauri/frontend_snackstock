@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Recipe } from '../types';
-import { X, Clock, ChefHat, Users } from 'lucide-react';
+import { X, Clock, ChefHat, Users, CheckCircle2 } from 'lucide-react';
 
 interface RecipeModalProps {
   recipe: Recipe | null;
@@ -10,11 +10,31 @@ interface RecipeModalProps {
 }
 
 const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose }) => {
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+
   if (!isLoading && !recipe) return null;
+
+  const toggleStep = (index: number) => {
+    setCompletedSteps(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  // Dividir pasos en fases
+  const groupInstructions = (instructions: string[]) => {
+    const third = Math.ceil(instructions.length / 3);
+    return {
+      preparacion: instructions.slice(0, third),
+      coccion: instructions.slice(third, third * 2),
+      finalizacion: instructions.slice(third * 2)
+    };
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-3xl rounded-[2rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+      <div className="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
         <div className="relative p-8 max-h-[90vh] overflow-y-auto">
           <button 
             onClick={onClose}
@@ -71,51 +91,171 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose })
                     </div>
                     <h3 className="text-xl font-bold text-slate-800">Ingredientes</h3>
                   </div>
-                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-5 border-2 border-blue-100">
                     <ul className="space-y-3">
                       {(Array.isArray(recipe.ingredients) ? recipe.ingredients : []).map((ing, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-slate-700">
-                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold shrink-0 mt-0.5">
+                        <li key={idx} className="flex items-start gap-3 text-slate-800 hover:bg-white/50 p-2 rounded-lg transition">
+                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold shrink-0 mt-0.5">
                             ✓
                           </span>
-                          <span className="leading-relaxed">{ing}</span>
+                          <span className="leading-relaxed font-medium">{ing}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
 
-                {/* Instrucciones */}
-                <div className="md:col-span-3 space-y-4">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center">
-                      <span className="text-white text-lg">👨‍🍳</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-800">Preparación</h3>
-                  </div>
-                  <ol className="space-y-4">
-                    {(Array.isArray(recipe.instructions) ? recipe.instructions : []).map((step, idx) => (
-                      <li key={idx} className="flex gap-4 group">
-                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 text-white text-sm font-bold shrink-0 shadow-md group-hover:scale-110 transition-transform">
-                          {idx + 1}
-                        </span>
-                        <div className="flex-1 pt-1">
-                          <p className="text-slate-700 leading-relaxed">{step}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
+                {/* Instrucciones con fases */}
+                <div className="md:col-span-3 space-y-6">
+                  {(() => {
+                    const instructions = Array.isArray(recipe.instructions) ? recipe.instructions : [];
+                    const grouped = groupInstructions(instructions);
+                    let globalIndex = 0;
+                    
+                    return (
+                      <>
+                        {/* Fase 1: Preparación */}
+                        {grouped.preparacion.length > 0 && (
+                          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 border-2 border-green-200">
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                                <span className="text-white text-lg">🔪</span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800">Fase 1: Preparación</h4>
+                            </div>
+                            <ol className="space-y-3">
+                              {grouped.preparacion.map((step) => {
+                                const idx = globalIndex++;
+                                const isCompleted = completedSteps.includes(idx);
+                                return (
+                                  <li key={idx} 
+                                    onClick={() => toggleStep(idx)}
+                                    className={`flex gap-3 cursor-pointer group hover:bg-white/50 p-3 rounded-xl transition ${isCompleted ? 'opacity-60' : ''}`}
+                                  >
+                                    <button className="shrink-0 mt-1">
+                                      <CheckCircle2 
+                                        size={20} 
+                                        className={`transition-colors ${isCompleted ? 'text-green-600 fill-green-600' : 'text-slate-300'}`}
+                                      />
+                                    </button>
+                                    <span className={`text-slate-700 leading-relaxed ${isCompleted ? 'line-through' : ''}`}>
+                                      {step}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                            </ol>
+                          </div>
+                        )}
+
+                        {/* Fase 2: Cocción */}
+                        {grouped.coccion.length > 0 && (
+                          <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-5 border-2 border-orange-200">
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+                                <span className="text-white text-lg">🔥</span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800">Fase 2: Cocción</h4>
+                            </div>
+                            <ol className="space-y-3">
+                              {grouped.coccion.map((step) => {
+                                const idx = globalIndex++;
+                                const isCompleted = completedSteps.includes(idx);
+                                return (
+                                  <li key={idx}
+                                    onClick={() => toggleStep(idx)}
+                                    className={`flex gap-3 cursor-pointer group hover:bg-white/50 p-3 rounded-xl transition ${isCompleted ? 'opacity-60' : ''}`}
+                                  >
+                                    <button className="shrink-0 mt-1">
+                                      <CheckCircle2 
+                                        size={20} 
+                                        className={`transition-colors ${isCompleted ? 'text-orange-600 fill-orange-600' : 'text-slate-300'}`}
+                                      />
+                                    </button>
+                                    <span className={`text-slate-700 leading-relaxed ${isCompleted ? 'line-through' : ''}`}>
+                                      {step}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                            </ol>
+                          </div>
+                        )}
+
+                        {/* Fase 3: Finalización */}
+                        {grouped.finalizacion.length > 0 && (
+                          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-5 border-2 border-purple-200">
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                                <span className="text-white text-lg">✨</span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800">Fase 3: Finalización</h4>
+                            </div>
+                            <ol className="space-y-3">
+                              {grouped.finalizacion.map((step) => {
+                                const idx = globalIndex++;
+                                const isCompleted = completedSteps.includes(idx);
+                                return (
+                                  <li key={idx}
+                                    onClick={() => toggleStep(idx)}
+                                    className={`flex gap-3 cursor-pointer group hover:bg-white/50 p-3 rounded-xl transition ${isCompleted ? 'opacity-60' : ''}`}
+                                  >
+                                    <button className="shrink-0 mt-1">
+                                      <CheckCircle2 
+                                        size={20} 
+                                        className={`transition-colors ${isCompleted ? 'text-purple-600 fill-purple-600' : 'text-slate-300'}`}
+                                      />
+                                    </button>
+                                    <span className={`text-slate-700 leading-relaxed ${isCompleted ? 'line-through' : ''}`}>
+                                      {step}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                            </ol>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
-              {/* Footer con botón */}
-              <div className="pt-6 flex justify-center border-t-2 border-slate-100">
-                <button 
-                  onClick={onClose}
-                  className="px-10 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-105"
-                >
-                  ¡Listo para cocinar! 🍽️
-                </button>
+              {/* Progress bar y Footer */}
+              <div className="pt-6 space-y-4 border-t-2 border-slate-100">
+                {/* Barra de progreso */}
+                {Array.isArray(recipe.instructions) && recipe.instructions.length > 0 && (
+                  <div className="bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-500 via-orange-500 to-purple-500 transition-all duration-500 ease-out"
+                      style={{ 
+                        width: `${(completedSteps.length / recipe.instructions.length) * 100}%` 
+                      }}
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-slate-600">
+                    {completedSteps.length > 0 ? (
+                      <span className="font-medium">
+                        🎉 {completedSteps.length} de {Array.isArray(recipe.instructions) ? recipe.instructions.length : 0} pasos completados
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">Haz clic en cada paso para marcarlo como completado</span>
+                    )}
+                  </div>
+                  
+                  <button 
+                    onClick={onClose}
+                    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105"
+                  >
+                    {completedSteps.length === (Array.isArray(recipe.instructions) ? recipe.instructions.length : 0) && completedSteps.length > 0
+                      ? '¡Buen provecho! 🍽️'
+                      : 'Cerrar'
+                    }
+                  </button>
+                </div>
               </div>
             </div>
           )}
