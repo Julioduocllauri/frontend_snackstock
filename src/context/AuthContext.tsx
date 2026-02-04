@@ -47,6 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      console.log('🔐 Intentando login para:', email);
+      
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,6 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       
       const data = await response.json();
+      console.log('📦 Respuesta del servidor:', data);
       
       if (!data.success) {
         throw new Error(data.error || 'Error al iniciar sesión');
@@ -67,10 +70,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         onboarding_completed: data.data.onboarding_completed
       };
       
+      console.log('👤 Usuario creado:', loggedUser);
+      console.log('🎯 Onboarding completado:', loggedUser.onboarding_completed);
+      console.log('🎯 showOnboarding desde backend:', data.showOnboarding);
+      
       setUser(loggedUser);
       localStorage.setItem('user', JSON.stringify(loggedUser));
+      
+      console.log('💾 Usuario guardado en localStorage');
     } catch (error) {
-      console.error('Error en login:', error);
+      console.error('❌ Error en login:', error);
       throw error;
     }
   };
@@ -83,8 +92,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const updateUser = (updatedUser: Partial<User>) => {
     if (user) {
       const newUser = { ...user, ...updatedUser };
+      console.log('🔄 Actualizando usuario:', updatedUser);
+      console.log('👤 Nuevo estado de usuario:', newUser);
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
+      console.log('💾 Usuario actualizado guardado en localStorage');
     }
   };
 
