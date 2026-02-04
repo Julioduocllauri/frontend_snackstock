@@ -13,32 +13,52 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
 
   const steps = [
     {
-      icon: <Package className="w-16 h-16 text-blue-500 mx-auto mb-4" />,
-      title: "¡Bienvenido a SnackStock! 🎉",
+      icon: (
+        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <span className="text-5xl">🎉</span>
+        </div>
+      ),
+      title: "¡Bienvenido a SnackStock!",
       description: "La app inteligente que te ayuda a gestionar tu despensa, evitar desperdicios y aprovechar al máximo tus alimentos.",
       tip: "Nunca más olvides lo que tienes en casa"
     },
     {
-      icon: <Camera className="w-16 h-16 text-green-500 mx-auto mb-4" />,
-      title: "Escanea tus Boletas 📸",
+      icon: (
+        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <span className="text-5xl">📸</span>
+        </div>
+      ),
+      title: "Escanea tus Boletas",
       description: "Solo toma una foto de tu boleta del supermercado y nuestra IA extraerá todos los productos automáticamente.",
       tip: "Ahorra tiempo registrando múltiples productos a la vez"
     },
     {
-      icon: <Package className="w-16 h-16 text-purple-500 mx-auto mb-4" />,
-      title: "Gestiona tu Inventario 📦",
+      icon: (
+        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <span className="text-5xl">📦</span>
+        </div>
+      ),
+      title: "Gestiona tu Inventario",
       description: "Ve todos tus productos en un solo lugar. Filtra por categoría, fecha de vencimiento y recibe alertas de productos por vencer.",
       tip: "Marca productos como consumidos o desperdiciados para mejorar tus estadísticas"
     },
     {
-      icon: <ChefHat className="w-16 h-16 text-orange-500 mx-auto mb-4" />,
-      title: "Genera Recetas 👨‍🍳",
+      icon: (
+        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <span className="text-5xl">👨‍🍳</span>
+        </div>
+      ),
+      title: "Genera Recetas",
       description: "¿No sabes qué cocinar? Nuestra IA te sugiere recetas deliciosas usando los ingredientes que ya tienes.",
       tip: "Aprovecha productos próximos a vencer en recetas creativas"
     },
     {
-      icon: <BarChart3 className="w-16 h-16 text-red-500 mx-auto mb-4" />,
-      title: "Analiza tus Hábitos 📊",
+      icon: (
+        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-red-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <span className="text-5xl">📊</span>
+        </div>
+      ),
+      title: "Analiza tus Hábitos",
       description: "Revisa tus estadísticas de consumo, calorías, productos favoritos y descubre patrones en tu alimentación.",
       tip: "Reduce el desperdicio identificando productos que no consumes"
     }
