@@ -66,8 +66,8 @@ const Statistics: React.FC = () => {
       <ContextualTip
         isOpen={showStatisticsTip}
         onClose={handleCloseStatisticsTip}
-        title="¡Analiza tus hábitos! 📊"
-        description="Descubre cuántas calorías consumes, tus productos favoritos y cuánto desperdicias. Mejora tus hábitos alimenticios con datos reales."
+        title="¿Qué son las estadísticas? 📊"
+        description="Aquí puedes ver cuántos productos tienes, cuántas calorías consumes al día, cuáles son tus productos favoritos y cuánto desperdicias. Usa esta información para mejorar tus hábitos de compra y alimentación."
         icon={<BarChart3 className="w-6 h-6" />}
         position="center"
       />

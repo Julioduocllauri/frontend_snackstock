@@ -33,22 +33,28 @@ const Dashboard: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Manejar onboarding y tooltips
+  // Manejar onboarding y tooltips - SIMPLIFICADO
   useEffect(() => {
     if (!user) return;
 
-    const onboardingCompleted = user.onboarding_completed;
-    const dashboardTipShown = localStorage.getItem('dashboardTipShown');
-    const onboardingShown = sessionStorage.getItem('onboardingShown'); // Usar sessionStorage para la sesión
-    
-    // Mostrar onboarding solo si NO está completado y NO se ha mostrado en esta sesión
-    if (!onboardingCompleted && !onboardingShown) {
-      sessionStorage.setItem('onboardingShown', 'true');
+    console.log('Usuario cargado:', { 
+      id: user.id, 
+      email: user.email, 
+      onboarding_completed: user.onboarding_completed 
+    });
+
+    // Si NO ha completado onboarding, mostrarlo
+    if (user.onboarding_completed === false || user.onboarding_completed === undefined) {
+      console.log('Mostrando onboarding...');
       setTimeout(() => setShowOnboarding(true), 500);
     } 
-    // Mostrar tip del dashboard solo si completó onboarding y no lo ha visto antes
-    else if (onboardingCompleted && !dashboardTipShown) {
-      setTimeout(() => setShowDashboardTip(true), 1000);
+    // Si YA completó onboarding, mostrar tip del dashboard (solo primera vez)
+    else {
+      const dashboardTipShown = localStorage.getItem('dashboardTipShown');
+      console.log('Onboarding completado. dashboardTipShown:', dashboardTipShown);
+      if (!dashboardTipShown) {
+        setTimeout(() => setShowDashboardTip(true), 800);
+      }
     }
   }, [user]);
 
@@ -129,8 +135,8 @@ const Dashboard: React.FC = () => {
       <ContextualTip
         isOpen={showDashboardTip}
         onClose={handleCloseDashboardTip}
-        title="¡Escanea tu primera boleta! 📸"
-        description="Usa el botón de arriba para tomar una foto de tu ticket del supermercado. La IA extraerá automáticamente todos los productos y los agregará a tu inventario."
+        title="¿Cómo empezar? 🚀"
+        description="Para agregar productos a tu despensa, presiona el botón 'Escanear Boleta' de arriba. Toma una foto clara de tu ticket del supermercado y nuestra IA detectará automáticamente todos los productos. ¡Es muy fácil!"
         icon={<Camera className="w-6 h-6" />}
         position="center"
       />
