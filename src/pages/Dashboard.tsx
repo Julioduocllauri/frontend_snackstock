@@ -6,7 +6,6 @@ import RecipeModal from '../components/RecipeModal';
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import OnboardingModal from '../components/OnboardingModal';
-import GuidedTour from '../components/GuidedTour';
 import ContextualTip from '../components/ContextualTip';
 import { getPantryItems, processReceipt, generateRecipeAI, Product } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -26,7 +25,6 @@ const Dashboard: React.FC = () => {
     ingredient: string;
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showGuidedTour, setShowGuidedTour] = useState(false);
   const [showDashboardTip, setShowDashboardTip] = useState(false);
 
   // Cargar datos al iniciar
@@ -46,17 +44,6 @@ const Dashboard: React.FC = () => {
       }
     }
   }, []);
-
-  // Mostrar tour guiado después de cerrar onboarding
-  const handleOnboardingClose = () => {
-    console.log('Onboarding cerrado, mostrando tour guiado...');
-    setShowOnboarding(false);
-    // Mostrar el tour guiado después de un pequeño delay
-    setTimeout(() => {
-      console.log('Activando tour guiado');
-      setShowGuidedTour(true);
-    }, 800);
-  };
 
   const handleCloseDashboardTip = () => {
     setShowDashboardTip(false);
@@ -139,14 +126,8 @@ const Dashboard: React.FC = () => {
 
       {/* CONTEXTUAL TIP - DASHBOARD */}
       <ContextualTip
-        isOpen={showDashboardTip}
-        onClose={handleCloseDashboardTip}
-        title="¡Escanea tu primera boleta! 📸"
-        description="Usa el botón de arriba para tomar una foto de tu ticket del supermercado. La IA extraerá automáticamente todos los productos y los agregará a tu inventario."
-        icon={<Camera className="w-6 h-6" />}
-        position="top-right"
-      />
-
+        isOpen={s() => setShowOnboarding(false)}
+        userId={user?.id || ''
       {/* HERO SECTION - ESCÁNER */}
       <div id="scan-section">
         <ScanSection onScan={handleScan} isScanning={isScanning} />
