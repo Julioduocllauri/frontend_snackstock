@@ -98,9 +98,11 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
   const step = steps[currentStep];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative animate-fadeIn">
-        {/* Botón cerrar */}
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] p-4">
+      {/* Contenedor que centra el modal considerando el sidebar en desktop */}
+      <div className="flex items-center justify-center min-h-screen md:ml-32">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 md:p-8 relative animate-fadeIn">
+          {/* Botón cerrar */}
         <button
           onClick={handleSkip}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
@@ -169,6 +171,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
         <div className="text-center mt-6 text-sm text-gray-400">
           {currentStep + 1} de {steps.length}
         </div>
+      </div>
       </div>
 
       <style>{`

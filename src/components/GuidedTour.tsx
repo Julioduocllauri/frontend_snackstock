@@ -102,30 +102,44 @@ const GuidedTour: React.FC<GuidedTourProps> = ({ isOpen, onClose }) => {
 
   const getTooltipPosition = () => {
     const padding = 20;
+    const windowWidth = window.innerWidth;
+    const tooltipWidth = 384; // max-w-md = 28rem = 448px aprox
+    
+    // Para elementos del sidebar (navegación), mostrar tooltip a la derecha
+    const isNavElement = step.target.startsWith('nav-');
+    
+    if (isNavElement || step.position === 'right') {
+      return {
+        top: elementPosition.top + elementPosition.height / 2,
+        left: Math.min(elementPosition.left + elementPosition.width + padding, windowWidth - tooltipWidth - 20),
+        transform: 'translateY(-50%)'
+      };
+    }
+    
     switch (step.position) {
       case 'bottom':
         return {
           top: elementPosition.top + elementPosition.height + padding,
-          left: elementPosition.left + elementPosition.width / 2,
+          left: Math.max(Math.min(elementPosition.left + elementPosition.width / 2, windowWidth - tooltipWidth / 2 - 20), tooltipWidth / 2 + 20),
           transform: 'translateX(-50%)'
         };
       case 'top':
         return {
           top: elementPosition.top - padding,
-          left: elementPosition.left + elementPosition.width / 2,
+          left: Math.max(Math.min(elementPosition.left + elementPosition.width / 2, windowWidth - tooltipWidth / 2 - 20), tooltipWidth / 2 + 20),
           transform: 'translate(-50%, -100%)'
         };
       case 'left':
         return {
           top: elementPosition.top + elementPosition.height / 2,
-          left: elementPosition.left - padding,
-          transform: 'translate(-100%, -50%)'
-        };
-      case 'right':
-        return {
-          top: elementPosition.top + elementPosition.height / 2,
-          left: elementPosition.left + elementPosition.width + padding,
+          left: Math.max(elementPosition.left - padding - tooltipWidth, 20),
           transform: 'translateY(-50%)'
+        };
+      default:
+        return {
+          top: elementPosition.top + elementPosition.height + padding,
+          left: Math.max(Math.min(elementPosition.left + elementPosition.width / 2, windowWidth - tooltipWidth / 2 - 20), tooltipWidth / 2 + 20),
+          transform: 'translateX(-50%)'
         };
     }
   };
@@ -133,11 +147,11 @@ const GuidedTour: React.FC<GuidedTourProps> = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Overlay oscuro */}
-      <div className="fixed inset-0 bg-black bg-opacity-60 z-[60] transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-black bg-opacity-60 z-[100] transition-opacity" onClick={onClose} />
       
       {/* Spotlight - resalta el elemento */}
       <div
-        className="fixed z-[61] pointer-events-none transition-all duration-300"
+        className="fixed z-[101] pointer-events-none transition-all duration-300"
         style={{
           top: elementPosition.top - 8,
           left: elementPosition.left - 8,
@@ -151,7 +165,7 @@ const GuidedTour: React.FC<GuidedTourProps> = ({ isOpen, onClose }) => {
 
       {/* Tooltip con instrucciones */}
       <div
-        className="fixed z-[62] bg-white rounded-2xl shadow-2xl p-6 max-w-md animate-fadeIn"
+        className="fixed z-[102] bg-white rounded-2xl shadow-2xl p-6 max-w-md animate-fadeIn"
         style={getTooltipPosition()}
       >
         <button
