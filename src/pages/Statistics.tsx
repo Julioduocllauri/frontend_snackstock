@@ -69,7 +69,7 @@ const Statistics: React.FC = () => {
         title="¡Analiza tus hábitos! 📊"
         description="Descubre cuántas calorías consumes, tus productos favoritos y cuánto desperdicias. Mejora tus hábitos alimenticios con datos reales."
         icon={<BarChart3 className="w-6 h-6" />}
-        position="top-left"
+        position="center"
       />
 
       {/* Header */}

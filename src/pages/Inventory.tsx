@@ -140,7 +140,7 @@ const Inventory: React.FC = () => {
         title="Gestiona tu inventario 📦"
         description="Aquí puedes ver, editar y eliminar productos. Usa los filtros para buscar por categoría. Marca productos como consumidos para mejorar tus estadísticas."
         icon={<Package className="w-6 h-6" />}
-        position="top-right"
+        position="center"
       />
 
       {/* Header */}
