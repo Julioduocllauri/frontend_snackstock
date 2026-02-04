@@ -6,6 +6,7 @@ import RecipeModal from '../components/RecipeModal';
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import OnboardingModal from '../components/OnboardingModal';
+import GuidedTour from '../components/GuidedTour';
 import { getPantryItems, processReceipt, generateRecipeAI, Product } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -24,6 +25,7 @@ const Dashboard: React.FC = () => {
     ingredient: string;
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showGuidedTour, setShowGuidedTour] = useState(false);
 
   // Cargar datos al iniciar
   useEffect(() => {
@@ -36,6 +38,13 @@ const Dashboard: React.FC = () => {
       setTimeout(() => setShowOnboarding(true), 500);
     }
   }, []);
+
+  // Mostrar tour guiado después de cerrar onboarding
+  const handleOnboardingClose = () => {
+    setShowOnboarding(false);
+    // Mostrar el tour guiado después de un pequeño delay
+    setTimeout(() => setShowGuidedTour(true), 800);
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -101,15 +110,23 @@ const Dashboard: React.FC = () => {
       {/* ONBOARDING MODAL */}
       <OnboardingModal 
         isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)}
+        onClose={handleOnboardingClose}
         userId={user?.id || ''}
       />
 
+      {/* GUIDED TOUR */}
+      <GuidedTour 
+        isOpen={showGuidedTour} 
+        onClose={() => setShowGuidedTour(false)}
+      />
+
       {/* HERO SECTION - ESCÁNER */}
-      <ScanSection onScan={handleScan} isScanning={isScanning} />
+      <div id="scan-section">
+        <ScanSection onScan={handleScan} isScanning={isScanning} />
+      </div>
 
       {/* LISTA DE DESPENSA */}
-      <section className="space-y-6">
+      <section className="space-y-6" id="pantry-list">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
             Mi Despensa 

@@ -21,10 +21,12 @@ interface NavItemProps {
   label: string;
   active?: boolean;
   onClick?: () => void;
+  htmlId?: string;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
+const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick, htmlId }) => (
   <button
+    id={htmlId}
     onClick={onClick}
     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-left ${
       active 
@@ -43,10 +45,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { id: 'dashboard' as const, icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
-    { id: 'inventory' as const, icon: <Package size={20} />, label: 'Inventario' },
-    { id: 'recipes' as const, icon: <ChefHat size={20} />, label: 'Recetas' },
-    { id: 'statistics' as const, icon: <BarChart3 size={20} />, label: 'Estadísticas' },
+    { id: 'dashboard' as const, icon: <LayoutDashboard size={20} />, label: 'Dashboard', htmlId: 'nav-dashboard' },
+    { id: 'inventory' as const, icon: <Package size={20} />, label: 'Inventario', htmlId: 'nav-inventory' },
+    { id: 'recipes' as const, icon: <ChefHat size={20} />, label: 'Recetas', htmlId: 'nav-recipes' },
+    { id: 'statistics' as const, icon: <BarChart3 size={20} />, label: 'Estadísticas', htmlId: 'nav-statistics' },
   ];
 
   return (
@@ -67,6 +69,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               label={item.label}
               active={currentPage === item.id}
               onClick={() => setCurrentPage(item.id)}
+              htmlId={item.htmlId}
             />
           ))}
         </nav>
