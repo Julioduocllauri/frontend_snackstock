@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, Plus } from 'lucide-react';
+import { Filter, Plus, Camera } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import ScanSection from '../components/ScanSection';
 import RecipeModal from '../components/RecipeModal';
@@ -7,6 +7,7 @@ import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import OnboardingModal from '../components/OnboardingModal';
 import GuidedTour from '../components/GuidedTour';
+import ContextualTip from '../components/ContextualTip';
 import { getPantryItems, processReceipt, generateRecipeAI, Product } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -26,6 +27,7 @@ const Dashboard: React.FC = () => {
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuidedTour, setShowGuidedTour] = useState(false);
+  const [showDashboardTip, setShowDashboardTip] = useState(false);
 
   // Cargar datos al iniciar
   useEffect(() => {
@@ -36,6 +38,12 @@ const Dashboard: React.FC = () => {
     if (!onboardingCompleted) {
       // Pequeño delay para que cargue suavemente
       setTimeout(() => setShowOnboarding(true), 500);
+    } else {
+      // Si ya completó onboarding, mostrar tip del dashboard
+      const dashboardTipShown = localStorage.getItem('dashboardTipShown');
+      if (!dashboardTipShown) {
+        setTimeout(() => setShowDashboardTip(true), 1000);
+      }
     }
   }, []);
 
@@ -48,6 +56,11 @@ const Dashboard: React.FC = () => {
       console.log('Activando tour guiado');
       setShowGuidedTour(true);
     }, 800);
+  };
+
+  const handleCloseDashboardTip = () => {
+    setShowDashboardTip(false);
+    localStorage.setItem('dashboardTipShown', 'true');
   };
 
   const loadData = async () => {
@@ -122,6 +135,16 @@ const Dashboard: React.FC = () => {
       <GuidedTour 
         isOpen={showGuidedTour} 
         onClose={() => setShowGuidedTour(false)}
+      />
+
+      {/* CONTEXTUAL TIP - DASHBOARD */}
+      <ContextualTip
+        isOpen={showDashboardTip}
+        onClose={handleCloseDashboardTip}
+        title="¡Escanea tu primera boleta! 📸"
+        description="Usa el botón de arriba para tomar una foto de tu ticket del supermercado. La IA extraerá automáticamente todos los productos y los agregará a tu inventario."
+        icon={<Camera className="w-6 h-6" />}
+        position="top-right"
       />
 
       {/* HERO SECTION - ESCÁNER */}
