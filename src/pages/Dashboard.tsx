@@ -60,8 +60,10 @@ const Dashboard: React.FC = () => {
   }, [user]);
 
   const handleCloseDashboardTip = () => {
+    console.log('❌ Cerrando tooltip del dashboard y guardando en localStorage');
     setShowDashboardTip(false);
     localStorage.setItem('dashboardTipShown', 'true');
+    console.log('dashboardTipShown guardado:', localStorage.getItem('dashboardTipShown'));
   };
 
   const loadData = async () => {
