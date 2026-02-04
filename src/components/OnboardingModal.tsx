@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Package, Camera, ChefHat, BarChart3, ArrowRight, Sparkles, ShoppingBag } from 'lucide-react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 interface OnboardingModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface OnboardingModalProps {
 }
 
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, userId }) => {
+  const { updateUser } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
@@ -86,6 +88,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
       console.log('Completando onboarding para usuario:', userId);
       await axios.post(`${API_URL}/auth/complete-onboarding/${userId}`);
       console.log('Onboarding completado exitosamente');
+      
+      // Actualizar el usuario en el contexto
+      updateUser({ onboarding_completed: true });
+      
       onClose();
     } catch (error) {
       console.error('Error completando onboarding:', error);

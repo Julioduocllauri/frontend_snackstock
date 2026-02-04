@@ -35,18 +35,22 @@ const Dashboard: React.FC = () => {
 
   // Manejar onboarding y tooltips
   useEffect(() => {
-    // Verificar si debe mostrar onboarding
-    const onboardingCompleted = user?.onboarding_completed;
+    if (!user) return;
+
+    const onboardingCompleted = user.onboarding_completed;
     const dashboardTipShown = localStorage.getItem('dashboardTipShown');
+    const onboardingShown = sessionStorage.getItem('onboardingShown'); // Usar sessionStorage para la sesión
     
-    if (!onboardingCompleted && user) {
-      // Pequeño delay para que cargue suavemente
+    // Mostrar onboarding solo si NO está completado y NO se ha mostrado en esta sesión
+    if (!onboardingCompleted && !onboardingShown) {
+      sessionStorage.setItem('onboardingShown', 'true');
       setTimeout(() => setShowOnboarding(true), 500);
-    } else if (onboardingCompleted && !dashboardTipShown) {
-      // Si ya completó onboarding y no ha visto el tip del dashboard
+    } 
+    // Mostrar tip del dashboard solo si completó onboarding y no lo ha visto antes
+    else if (onboardingCompleted && !dashboardTipShown) {
       setTimeout(() => setShowDashboardTip(true), 1000);
     }
-  }, [user?.onboarding_completed, user]);
+  }, [user]);
 
   const handleCloseDashboardTip = () => {
     setShowDashboardTip(false);
