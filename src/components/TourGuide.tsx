@@ -102,33 +102,13 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
     onSkip();
   };
 
-  // Calcular posición del tooltip - justo debajo de la flecha
+  // Calcular posición del tooltip - siempre centrado
   const getTooltipPosition = (): React.CSSProperties => {
-    if (!targetRect) return {};
-
-    const position = step.position || 'bottom';
-    const tooltipWidth = 400;
-    const gap = 20; // Gap pequeño entre flecha y tooltip
-
-    let top = 0;
-    let left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2);
-
-    switch (position) {
-      case 'top':
-        // Tooltip arriba del elemento
-        top = targetRect.top - 320;
-        break;
-      case 'bottom':
-        // Tooltip debajo de la flecha
-        top = targetRect.top + 10;
-        break;
-    }
-
-    // Ajustar si se sale de la pantalla horizontalmente
-    if (left < 10) left = 10;
-    if (left + tooltipWidth > window.innerWidth - 10) {
-      left = window.innerWidth - tooltipWidth - 10;
-    }
+    const tooltipWidth = 500;
+    
+    // Centrar horizontal y verticalmente
+    const left = (window.innerWidth / 2) - (tooltipWidth / 2);
+    const top = (window.innerHeight / 2) - 150; // Centrado vertical
 
     return {
       position: 'fixed',
