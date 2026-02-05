@@ -6,20 +6,9 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import ContextualTip from '../components/ContextualTip';
 import TourGuide, { TourStep } from '../components/TourGuide';
 import HelpButton from '../components/HelpButton';
+import RecipeModal from '../components/RecipeModal';
 import { useTour } from '../hooks/useTour';
-
-interface Recipe {
-  id?: number;
-  title: string;
-  mainIngredient?: string;
-  time?: string;
-  prepTime?: string;
-  servings: number;
-  difficulty: string;
-  saved?: boolean;
-  instructions?: string[] | string;
-  ingredients?: string[];
-}
+import { Recipe } from '../types';
 
 interface Product {
   id: number;
@@ -444,83 +433,11 @@ const Recipes: React.FC = () => {
       </div>
 
       {/* Recipe Detail Modal */}
-      {selectedRecipe && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedRecipe(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in" onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-t-2xl">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-white mb-2">{selectedRecipe.title}</h2>
-                  <p className="text-purple-100">Ingrediente principal: {selectedRecipe.mainIngredient}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedRecipe(null)}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Info Cards */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-blue-50 rounded-xl p-4 text-center">
-                  <Clock className="w-6 h-6 mx-auto mb-2 text-blue-600" />
-                  <p className="text-sm text-slate-600">Tiempo</p>
-                  <p className="font-bold text-slate-800">{selectedRecipe.prepTime}</p>
-                </div>
-                <div className="bg-purple-50 rounded-xl p-4 text-center">
-                  <Users className="w-6 h-6 mx-auto mb-2 text-purple-600" />
-                  <p className="text-sm text-slate-600">Porciones</p>
-                  <p className="font-bold text-slate-800">{selectedRecipe.servings}</p>
-                </div>
-                <div className="bg-pink-50 rounded-xl p-4 text-center">
-                  <ChefHat className="w-6 h-6 mx-auto mb-2 text-pink-600" />
-                  <p className="text-sm text-slate-600">Dificultad</p>
-                  <p className="font-bold text-slate-800">{selectedRecipe.difficulty}</p>
-                </div>
-              </div>
-
-              {/* Instructions */}
-              <div>
-                <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                  <Sparkles className="text-purple-500" />
-                  Instrucciones
-                </h3>
-                <div className="bg-slate-50 rounded-xl p-5">
-                  <p className="text-slate-700 leading-relaxed whitespace-pre-line">
-                    {selectedRecipe.instructions || 'No hay instrucciones disponibles'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t border-slate-200">
-                <button
-                  onClick={() => toggleSave(selectedRecipe.id)}
-                  className={`flex-1 px-6 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-                    selectedRecipe.saved
-                      ? 'bg-red-500 text-white hover:bg-red-600'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  <Heart className={selectedRecipe.saved ? 'fill-white' : ''} size={20} />
-                  {selectedRecipe.saved ? 'Guardada' : 'Guardar Receta'}
-                </button>
-                <button
-                  onClick={() => setSelectedRecipe(null)}
-                  className="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <RecipeModal 
+        recipe={selectedRecipe}
+        isLoading={false}
+        onClose={() => setSelectedRecipe(null)}
+      />
 
       {/* Toast Notifications */}
       {toast && (
