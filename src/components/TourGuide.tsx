@@ -179,20 +179,6 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
         }}
       />
 
-      {/* Flecha apuntando al elemento */}
-      {targetRect && (
-        <div
-          className="fixed transition-all duration-300 animate-bounce"
-          style={getArrowPosition()}
-        >
-          {step.position === 'bottom' ? (
-            <MoveDown className="w-10 h-10 text-blue-500" strokeWidth={3} />
-          ) : (
-            <MoveDown className="w-10 h-10 text-blue-500 rotate-180" strokeWidth={3} />
-          )}
-        </div>
-      )}
-
       {/* Tooltip con información */}
       <div
         ref={tooltipRef}
