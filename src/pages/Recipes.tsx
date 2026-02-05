@@ -9,6 +9,7 @@ import HelpButton from '../components/HelpButton';
 import RecipeModal from '../components/RecipeModal';
 import { useTour } from '../hooks/useTour';
 import { Recipe } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface Product {
   id: number;
@@ -18,6 +19,7 @@ interface Product {
 }
 
 const Recipes: React.FC = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [criticalProducts, setCriticalProducts] = useState<Product[]>([]);
@@ -62,9 +64,12 @@ const Recipes: React.FC = () => {
   useEffect(() => {
     loadCriticalProducts();
     
-    // Cargar recetas guardadas desde localStorage
-    const savedRecipes = localStorage.getItem('savedRecipes');
-    const savedRecipeIngredients = localStorage.getItem('recipeIngredients');
+    // Solo cargar recetas si hay un usuario autenticado
+    if (!user?.id) return;
+    
+    // Cargar recetas guardadas desde localStorage (específicas del usuario)
+    const savedRecipes = localStorage.getItem(`savedRecipes_${user.id}`);
+    const savedRecipeIngredients = localStorage.getItem(`recipeIngredients_${user.id}`);
     
     if (savedRecipes) {
       try {
@@ -84,32 +89,34 @@ const Recipes: React.FC = () => {
       }
     }
     
-    // Mostrar tip de recetas en la primera visita
-    const recipesTipShown = localStorage.getItem('recipesTipShown');
+    // Mostrar tip de recetas en la primera visita (específico del usuario)
+    const recipesTipShown = localStorage.getItem(`recipesTipShown_${user.id}`);
     if (!recipesTipShown) {
       setTimeout(() => setShowRecipesTip(true), 800);
     }
-  }, []);
+  }, [user]);
 
   const handleCloseRecipesTip = () => {
     setShowRecipesTip(false);
-    localStorage.setItem('recipesTipShown', 'true');
+    if (user?.id) {
+      localStorage.setItem(`recipesTipShown_${user.id}`, 'true');
+    }
   };
 
-  // Guardar recetas en localStorage cuando cambien
+  // Guardar recetas en localStorage cuando cambien (específicas del usuario)
   useEffect(() => {
-    if (recipes.length > 0) {
-      localStorage.setItem('savedRecipes', JSON.stringify(recipes));
+    if (recipes.length > 0 && user?.id) {
+      localStorage.setItem(`savedRecipes_${user.id}`, JSON.stringify(recipes));
     }
-  }, [recipes]);
+  }, [recipes, user]);
 
-  // Guardar mapa de ingredientes en localStorage cuando cambie
+  // Guardar mapa de ingredientes en localStorage cuando cambie (específico del usuario)
   useEffect(() => {
-    if (recipeIngredients.size > 0) {
+    if (recipeIngredients.size > 0 && user?.id) {
       const obj = Object.fromEntries(recipeIngredients);
-      localStorage.setItem('recipeIngredients', JSON.stringify(obj));
+      localStorage.setItem(`recipeIngredients_${user.id}`, JSON.stringify(obj));
     }
-  }, [recipeIngredients]);
+  }, [recipeIngredients, user]);
 
   const loadCriticalProducts = async () => {
     try {
