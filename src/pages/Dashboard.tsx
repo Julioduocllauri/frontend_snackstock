@@ -86,7 +86,7 @@ const Dashboard: React.FC = () => {
         }, 1500);
       }
     }
-  }, [user]);
+  }, [user, startTour]);
 
   const loadData = async () => {
     setLoading(true);
