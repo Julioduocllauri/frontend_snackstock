@@ -25,8 +25,8 @@ const Inventory: React.FC = () => {
   }>({ product: null, isNew: false });
   const [showInventoryTip, setShowInventoryTip] = useState(false);
 
-  // Tour guiado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('inventory-tour', 1000);
+  // Tour guiado - Se activa automáticamente si no se ha mostrado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('inventory-tour', 1500);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [

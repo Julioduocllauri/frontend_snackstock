@@ -30,8 +30,8 @@ const Dashboard: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showDashboardTip, setShowDashboardTip] = useState(false);
 
-  // Tour guiado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('dashboard-tour', 1500);
+  // Tour guiado - Sin delay automático, se activará manualmente
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('dashboard-tour', 0);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [
@@ -180,7 +180,11 @@ const Dashboard: React.FC = () => {
       {/* ONBOARDING MODAL */}
       <OnboardingModal 
         isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)}
+        onClose={() => {
+          setShowOnboarding(false);
+          // Iniciar el tour después de cerrar el onboarding
+          setTimeout(() => startTour(), 1000);
+        }}
         userId={user?.id || ''}
       />
 

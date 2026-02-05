@@ -43,8 +43,8 @@ const Recipes: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showRecipesTip, setShowRecipesTip] = useState(false);
 
-  // Tour guiado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('recipes-tour', 1000);
+  // Tour guiado - Se activa automáticamente si no se ha mostrado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('recipes-tour', 1500);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [
