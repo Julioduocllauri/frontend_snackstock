@@ -64,8 +64,17 @@ const Recipes: React.FC = () => {
   useEffect(() => {
     loadCriticalProducts();
     
+    // Limpiar recetas antiguas sin userId (sistema antiguo)
+    localStorage.removeItem('savedRecipes');
+    localStorage.removeItem('recipeIngredients');
+    localStorage.removeItem('recipesTipShown');
+    
     // Solo cargar recetas si hay un usuario autenticado
-    if (!user?.id) return;
+    if (!user?.id) {
+      setRecipes([]);
+      setRecipeIngredients(new Map());
+      return;
+    }
     
     // Cargar recetas guardadas desde localStorage (específicas del usuario)
     const savedRecipes = localStorage.getItem(`savedRecipes_${user.id}`);
@@ -77,7 +86,10 @@ const Recipes: React.FC = () => {
         setRecipes(parsedRecipes);
       } catch (error) {
         console.error('Error al cargar recetas guardadas:', error);
+        setRecipes([]);
       }
+    } else {
+      setRecipes([]);
     }
     
     if (savedRecipeIngredients) {
@@ -86,7 +98,10 @@ const Recipes: React.FC = () => {
         setRecipeIngredients(new Map(Object.entries(parsedMap).map(([k, v]) => [Number(k), v as string[]])));
       } catch (error) {
         console.error('Error al cargar ingredientes de recetas:', error);
+        setRecipeIngredients(new Map());
       }
+    } else {
+      setRecipeIngredients(new Map());
     }
     
     // Mostrar tip de recetas en la primera visita (específico del usuario)
