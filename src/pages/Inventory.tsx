@@ -4,6 +4,9 @@ import { getPantryItems, Product, updateProduct, deleteProduct, createProduct } 
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import ContextualTip from '../components/ContextualTip';
+import TourGuide, { TourStep } from '../components/TourGuide';
+import HelpButton from '../components/HelpButton';
+import { useTour } from '../hooks/useTour';
 
 const Inventory: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,6 +24,37 @@ const Inventory: React.FC = () => {
     isNew: boolean;
   }>({ product: null, isNew: false });
   const [showInventoryTip, setShowInventoryTip] = useState(false);
+
+  // Tour guiado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('inventory-tour', 1000);
+
+  // Pasos del tour
+  const tourSteps: TourStep[] = [
+    {
+      target: '#search-bar',
+      title: 'Buscar productos',
+      description: 'Usa esta barra de búsqueda para encontrar rápidamente cualquier producto de tu inventario por su nombre.',
+      position: 'bottom'
+    },
+    {
+      target: '#category-filter',
+      title: 'Filtrar por categoría',
+      description: 'Filtra tus productos por categoría: Lácteos, Proteínas, Verduras, Frutas, etc. ¡Así encuentras todo más fácil!',
+      position: 'bottom'
+    },
+    {
+      target: '#add-button',
+      title: 'Agregar productos',
+      description: 'Presiona aquí para agregar productos manualmente a tu inventario. Útil para cuando no puedes escanear una boleta.',
+      position: 'left'
+    },
+    {
+      target: '#products-table',
+      title: 'Tabla de productos',
+      description: 'Aquí verás todos tus productos con su información: nombre, categoría, días restantes y estado. Puedes editar o eliminar usando los botones de la derecha.',
+      position: 'top'
+    }
+  ];
 
   useEffect(() => {
     loadData();
@@ -130,6 +164,18 @@ const Inventory: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
+      {/* HELP BUTTON */}
+      <HelpButton onRestartTour={startTour} tourKey="inventory-tour" />
+
+      {/* TOUR GUIDE */}
+      <TourGuide
+        steps={tourSteps}
+        isActive={isTourActive && products.length > 0}
+        onComplete={completeTour}
+        onSkip={skipTour}
+        tourKey="inventory-tour"
+      />
+
       {/* CONTEXTUAL TIP - INVENTORY */}
       <ContextualTip
         isOpen={showInventoryTip}
@@ -153,7 +199,7 @@ const Inventory: React.FC = () => {
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6 space-y-4">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative" id="search-bar">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
             <input
               type="text"
@@ -166,6 +212,7 @@ const Inventory: React.FC = () => {
 
           {/* Category Filter */}
           <select
+            id="category-filter"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
             className="px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -178,6 +225,7 @@ const Inventory: React.FC = () => {
 
           {/* Add Button */}
           <button 
+            id="add-button"
             onClick={handleAdd}
             className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-all flex items-center gap-2"
           >
@@ -188,7 +236,7 @@ const Inventory: React.FC = () => {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" id="products-table">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200">

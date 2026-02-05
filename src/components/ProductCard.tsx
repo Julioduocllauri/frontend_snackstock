@@ -26,7 +26,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onCook }) => {
   };
 
   return (
-    <div className="group bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all border border-slate-100 flex flex-col justify-between h-48 relative overflow-hidden">
+    <div 
+      className="group bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all border border-slate-100 flex flex-col justify-between h-48 relative overflow-hidden"
+      data-product-card
+    >
       <div className="space-y-1 z-10">
         <div className="flex justify-between items-start">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">

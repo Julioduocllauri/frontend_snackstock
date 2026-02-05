@@ -3,12 +3,46 @@ import { TrendingUp, TrendingDown, Package, AlertTriangle, BarChart3, Calendar, 
 import { getStatistics, Statistics as StatsData } from '../services/statistics';
 import Toast from '../components/Toast';
 import ContextualTip from '../components/ContextualTip';
+import TourGuide, { TourStep } from '../components/TourGuide';
+import HelpButton from '../components/HelpButton';
+import { useTour } from '../hooks/useTour';
 
 const Statistics: React.FC = () => {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [showStatisticsTip, setShowStatisticsTip] = useState(false);
+
+  // Tour guiado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('statistics-tour', 1000);
+
+  // Pasos del tour
+  const tourSteps: TourStep[] = [
+    {
+      target: '#stats-cards',
+      title: 'Tarjetas de estadísticas',
+      description: 'Aquí verás un resumen rápido: total de productos, productos críticos, calorías consumidas y tasa de desperdicio.',
+      position: 'bottom'
+    },
+    {
+      target: '#calories-section',
+      title: 'Calorías consumidas',
+      description: 'Monitorea tus calorías diarias, semanales y mensuales. Perfecto para mantener un control de tu alimentación.',
+      position: 'top'
+    },
+    {
+      target: '#top-products',
+      title: 'Productos más consumidos',
+      description: 'Descubre cuáles son tus productos favoritos. Esto te ayuda a saber qué comprar con más frecuencia.',
+      position: 'top'
+    },
+    {
+      target: '#recommendations',
+      title: 'Recomendaciones personalizadas',
+      description: 'Recibe consejos basados en tus hábitos para reducir el desperdicio y mejorar tu alimentación.',
+      position: 'top'
+    }
+  ];
 
   useEffect(() => {
     loadStatistics();
@@ -82,6 +116,18 @@ const Statistics: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+        {/* HELP BUTTON */}
+        <HelpButton onRestartTour={startTour} tourKey="statistics-tour" />
+
+        {/* TOUR GUIDE */}
+        <TourGuide
+          steps={tourSteps}
+          isActive={isTourActive && hasData}
+          onComplete={completeTour}
+          onSkip={skipTour}
+          tourKey="statistics-tour"
+        />
+
         {/* CONTEXTUAL TIP */}
         <ContextualTip
           isOpen={showStatisticsTip}
@@ -127,7 +173,7 @@ const Statistics: React.FC = () => {
         )}
 
         {/* Stats Cards - Diseño Futurista */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="stats-cards">
           {/* Card 1 - Total Productos */}
           <div className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition"></div>
@@ -194,7 +240,7 @@ const Statistics: React.FC = () => {
         </div>
 
         {/* Resumen de Calorías - Diseño Moderno */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="calories-section">
           <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-xl border border-orange-400/30 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-orange-500/20 rounded-xl">
@@ -230,7 +276,7 @@ const Statistics: React.FC = () => {
         </div>
 
         {/* Top Products - Nuevo Diseño */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8" id="top-products">
           {/* Más Consumidos */}
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6">
@@ -311,7 +357,7 @@ const Statistics: React.FC = () => {
         </div>
 
         {/* Resumen General */}
-        <div className="bg-gradient-to-br from-slate-800/50 to-purple-900/30 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+        <div className="bg-gradient-to-br from-slate-800/50 to-purple-900/30 backdrop-blur-xl rounded-2xl p-8 border border-white/10" id="recommendations">
           <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
             <BarChart3 className="w-6 h-6 text-purple-400" />
             Resumen General
