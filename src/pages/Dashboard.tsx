@@ -44,14 +44,8 @@ const Dashboard: React.FC = () => {
     {
       target: '#pantry-list',
       title: 'Tu despensa',
-      description: 'Aquí verás todos tus productos organizados. Puedes filtrarlos, buscarlos y ver cuáles están próximos a vencer.',
+      description: 'Aquí verás todos tus productos organizados. Puedes filtrarlos, buscarlos y ver cuáles están próximos a vencer. Una vez que agregues productos, aparecerán como tarjetas que puedes gestionar.',
       position: 'top'
-    },
-    {
-      target: '[data-product-card]',
-      title: 'Tarjeta de producto',
-      description: 'Cada producto muestra su información: nombre, cantidad, fecha de vencimiento y estado. Presiona "Cocinar" para generar recetas con ese ingrediente.',
-      position: 'left'
     }
   ];
 
@@ -183,7 +177,11 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setShowOnboarding(false);
           // Iniciar el tour después de cerrar el onboarding
-          setTimeout(() => startTour(), 1000);
+          console.log('🎯 OnboardingModal cerrado, iniciando tour en 1 segundo...');
+          setTimeout(() => {
+            console.log('⏰ Llamando startTour()');
+            startTour();
+          }, 1000);
         }}
         userId={user?.id || ''}
       />

@@ -19,7 +19,11 @@ export const useTour = (tourKey: string, delay: number = 1000) => {
   }, [tourKey, delay]);
 
   const startTour = () => {
-    setIsActive(true);
+    const tourCompleted = localStorage.getItem(tourKey);
+    // Solo iniciar si no ha sido completado
+    if (!tourCompleted) {
+      setIsActive(true);
+    }
   };
 
   const completeTour = () => {
