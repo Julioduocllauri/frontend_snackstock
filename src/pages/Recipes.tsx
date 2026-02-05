@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChefHat, Clock, Users, Sparkles, Search, Heart, Loader2, X } from 'lucide-react';
-import { getPantryItems, generateRecipeAI } from '../services/api';
+import { getPantryItems, generateRecipeAI, recordConsumption, deleteProduct } from '../services/api';
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import ContextualTip from '../components/ContextualTip';
@@ -25,6 +25,7 @@ interface Product {
   id: number;
   name: string;
   days_left: number;
+  category?: string;
 }
 
 const Recipes: React.FC = () => {
@@ -98,6 +99,34 @@ const Recipes: React.FC = () => {
     }
   };
 
+  const consumeIngredientsFromInventory = async (ingredientNames: string[]) => {
+    try {
+      // Obtener todos los productos para encontrar IDs y categorías
+      const allProducts = await getPantryItems();
+      
+      // Filtrar productos que coincidan con los ingredientes usados
+      const usedProducts = allProducts.filter(p => 
+        ingredientNames.some(ing => ing.toLowerCase() === p.name.toLowerCase())
+      );
+      
+      // Registrar consumo en estadísticas y eliminar del inventario
+      for (const product of usedProducts) {
+        // 1. Registrar en historial de consumo (para estadísticas)
+        await recordConsumption(product.name, product.category, 1, undefined, 'consumed');
+        
+        // 2. Eliminar del inventario
+        await deleteProduct(product.id!);
+      }
+      
+      // Recargar productos críticos para actualizar la vista
+      await loadCriticalProducts();
+      
+    } catch (error) {
+      console.error('Error al consumir ingredientes:', error);
+      // No mostramos error al usuario para no interrumpir la experiencia
+    }
+  };
+
   const handleIngredientClick = (ingredient: string) => {
     // Toggle: agregar o quitar ingrediente
     setSelectedIngredients(prev => {
@@ -149,6 +178,10 @@ const Recipes: React.FC = () => {
         
         setRecipes([...newRecipes, ...recipes]);
         setSelectedIngredients([]);
+        
+        // Registrar consumo y eliminar productos del inventario
+        await consumeIngredientsFromInventory(ingredients);
+        
         setToast({ message: `¡${newRecipes.length} recetas generadas exitosamente!`, type: 'success' });
       }
     } catch (error) {

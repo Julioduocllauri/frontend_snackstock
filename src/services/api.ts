@@ -108,3 +108,21 @@ export const createProduct = async (product: Partial<Product>) => {
   });
   return response.data;
 };
+
+// 7. Registrar consumo de producto
+export const recordConsumption = async (productName: string, category?: string, quantity?: number, calories?: number, action: 'consumed' | 'wasted' = 'consumed') => {
+  const userId = getUserId();
+  if (!userId) {
+    throw new Error('Usuario no autenticado');
+  }
+  
+  const response = await api.post('/statistics/consumption', {
+    userId,
+    productName,
+    category: category || 'General',
+    quantity: quantity || 1,
+    calories,
+    action
+  });
+  return response.data;
+};
