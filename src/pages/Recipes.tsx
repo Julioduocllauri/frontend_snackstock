@@ -4,6 +4,9 @@ import { getPantryItems, generateRecipeAI } from '../services/api';
 import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import ContextualTip from '../components/ContextualTip';
+import TourGuide, { TourStep } from '../components/TourGuide';
+import HelpButton from '../components/HelpButton';
+import { useTour } from '../hooks/useTour';
 
 interface Recipe {
   id?: number;
@@ -39,6 +42,31 @@ const Recipes: React.FC = () => {
   } | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showRecipesTip, setShowRecipesTip] = useState(false);
+
+  // Tour guiado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('recipes-tour', 1000);
+
+  // Pasos del tour
+  const tourSteps: TourStep[] = [
+    {
+      target: '#critical-products',
+      title: 'Productos próximos a vencer',
+      description: 'Aquí verás tus productos que están por vencer (menos de 7 días). Úsalos en recetas para evitar desperdicios.',
+      position: 'bottom'
+    },
+    {
+      target: '#ingredient-selection',
+      title: 'Selecciona ingredientes',
+      description: 'Haz clic en los ingredientes que quieras usar en tus recetas. Puedes seleccionar varios a la vez.',
+      position: 'bottom'
+    },
+    {
+      target: '#generate-button',
+      title: 'Generar recetas',
+      description: 'Presiona este botón para que la IA te sugiera 3 recetas deliciosas usando los ingredientes seleccionados.',
+      position: 'left'
+    }
+  ];
 
   useEffect(() => {
     loadCriticalProducts();
@@ -166,6 +194,18 @@ const Recipes: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
+      {/* HELP BUTTON */}
+      <HelpButton onRestartTour={startTour} tourKey="recipes-tour" />
+
+      {/* TOUR GUIDE */}
+      <TourGuide
+        steps={tourSteps}
+        isActive={isTourActive && criticalProducts.length > 0}
+        onComplete={completeTour}
+        onSkip={skipTour}
+        tourKey="recipes-tour"
+      />
+
       {/* CONTEXTUAL TIP - RECETAS */}
       <ContextualTip
         isOpen={showRecipesTip}
@@ -186,7 +226,7 @@ const Recipes: React.FC = () => {
       </div>
 
       {/* Generador de Recetas con IA */}
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 mb-6 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 mb-6 text-white shadow-lg" id="critical-products">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-6 h-6" />
           <h2 className="text-xl font-semibold">Generar Receta con IA</h2>
@@ -202,7 +242,7 @@ const Recipes: React.FC = () => {
             <p className="mb-3 text-purple-100">
               Tienes {criticalProducts.length} productos próximos a vencer. Selecciona uno o más para generar recetas:
             </p>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-4" id="ingredient-selection">
               {criticalProducts.map(product => (
                 <button
                   key={product.id}
@@ -232,6 +272,7 @@ const Recipes: React.FC = () => {
                   ))}
                 </div>
                 <button
+                  id="generate-button"
                   onClick={handleGenerateRecipes}
                   disabled={generating}
                   className="w-full bg-white text-purple-600 font-semibold py-3 rounded-lg hover:bg-purple-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"

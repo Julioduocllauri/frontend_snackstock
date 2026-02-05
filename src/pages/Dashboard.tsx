@@ -7,6 +7,9 @@ import Toast from '../components/Toast';
 import ConfirmDialog from '../components/ConfirmDialog';
 import OnboardingModal from '../components/OnboardingModal';
 import ContextualTip from '../components/ContextualTip';
+import TourGuide, { TourStep } from '../components/TourGuide';
+import HelpButton from '../components/HelpButton';
+import { useTour } from '../hooks/useTour';
 import { getPantryItems, processReceipt, generateRecipeAI, Product } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -26,6 +29,31 @@ const Dashboard: React.FC = () => {
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showDashboardTip, setShowDashboardTip] = useState(false);
+
+  // Tour guiado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('dashboard-tour', 1500);
+
+  // Pasos del tour
+  const tourSteps: TourStep[] = [
+    {
+      target: '#scan-section',
+      title: 'Escanea tu boleta',
+      description: 'Presiona aquí para tomar una foto de tu boleta del supermercado. Nuestra IA detectará automáticamente todos los productos y los agregará a tu despensa.',
+      position: 'bottom'
+    },
+    {
+      target: '#pantry-list',
+      title: 'Tu despensa',
+      description: 'Aquí verás todos tus productos organizados. Puedes filtrarlos, buscarlos y ver cuáles están próximos a vencer.',
+      position: 'top'
+    },
+    {
+      target: '[data-product-card]',
+      title: 'Tarjeta de producto',
+      description: 'Cada producto muestra su información: nombre, cantidad, fecha de vencimiento y estado. Presiona "Cocinar" para generar recetas con ese ingrediente.',
+      position: 'left'
+    }
+  ];
 
   // Cargar datos al iniciar
   useEffect(() => {
@@ -137,6 +165,18 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
+      {/* HELP BUTTON */}
+      <HelpButton onRestartTour={startTour} tourKey="dashboard-tour" />
+
+      {/* TOUR GUIDE */}
+      <TourGuide
+        steps={tourSteps}
+        isActive={isTourActive && !showOnboarding && products.length > 0}
+        onComplete={completeTour}
+        onSkip={skipTour}
+        tourKey="dashboard-tour"
+      />
+
       {/* ONBOARDING MODAL */}
       <OnboardingModal 
         isOpen={showOnboarding} 
