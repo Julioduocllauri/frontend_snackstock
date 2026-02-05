@@ -28,7 +28,6 @@ const Dashboard: React.FC = () => {
     ingredient: string;
   } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showDashboardTip, setShowDashboardTip] = useState(false);
 
   // Tour guiado - Sin delay automático, se activará manualmente
   const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('dashboard-tour', 0);
@@ -77,26 +76,17 @@ const Dashboard: React.FC = () => {
         console.log('⏰ Ejecutando setTimeout para mostrar onboarding');
         setShowOnboarding(true);
       }, 500);
-    } 
-    // Si YA completó onboarding, mostrar tip del dashboard (solo primera vez)
-    else {
-      const dashboardTipShown = localStorage.getItem('dashboardTipShown');
-      console.log('✅ Onboarding completado. Tooltip mostrado antes:', dashboardTipShown);
-      if (!dashboardTipShown) {
-        console.log('📌 Mostrando tooltip del dashboard...');
-        setTimeout(() => setShowDashboardTip(true), 800);
-      } else {
-        console.log('ℹ️ Tooltip del dashboard ya fue mostrado anteriormente');
+    } else {
+      // Si ya completó onboarding, iniciar el tour automáticamente si no lo ha visto
+      const tourCompleted = localStorage.getItem('dashboard-tour');
+      if (!tourCompleted) {
+        console.log('🎯 Usuario con onboarding completado, iniciando tour automático...');
+        setTimeout(() => {
+          startTour();
+        }, 1500);
       }
     }
   }, [user]);
-
-  const handleCloseDashboardTip = () => {
-    console.log('❌ Cerrando tooltip del dashboard y guardando en localStorage');
-    setShowDashboardTip(false);
-    localStorage.setItem('dashboardTipShown', 'true');
-    console.log('dashboardTipShown guardado:', localStorage.getItem('dashboardTipShown'));
-  };
 
   const loadData = async () => {
     setLoading(true);
@@ -192,16 +182,6 @@ const Dashboard: React.FC = () => {
           }, 2000);
         }}
         userId={user?.id || ''}
-      />
-
-      {/* CONTEXTUAL TIP - DASHBOARD */}
-      <ContextualTip
-        isOpen={showDashboardTip}
-        onClose={handleCloseDashboardTip}
-        title="¿Cómo empezar? 🚀"
-        description="Para agregar productos a tu despensa, presiona el botón 'Escanear Boleta' de arriba. Toma una foto clara de tu ticket del supermercado y nuestra IA detectará automáticamente todos los productos. ¡Es muy fácil!"
-        icon={<Camera className="w-6 h-6" />}
-        position="center"
       />
 
       {/* HERO SECTION - ESCÁNER */}
