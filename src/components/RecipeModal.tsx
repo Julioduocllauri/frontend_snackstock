@@ -7,10 +7,13 @@ interface RecipeModalProps {
   recipe: Recipe | null;
   isLoading: boolean;
   onClose: () => void;
+  usedIngredients?: string[];
+  onComplete?: (ingredients: string[]) => void;
 }
 
-const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose }) => {
+const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose, usedIngredients = [], onComplete }) => {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [hasConsumed, setHasConsumed] = useState(false);
 
   if (!isLoading && !recipe) return null;
 
@@ -247,11 +250,20 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ recipe, isLoading, onClose })
                   </div>
                   
                   <button 
-                    onClick={onClose}
+                    onClick={() => {
+                      const allStepsCompleted = completedSteps.length === (Array.isArray(recipe.instructions) ? recipe.instructions.length : 0) && completedSteps.length > 0;
+                      if (allStepsCompleted && !hasConsumed && onComplete && usedIngredients.length > 0) {
+                        onComplete(usedIngredients);
+                        setHasConsumed(true);
+                        setTimeout(() => onClose(), 1500); // Cerrar después de 1.5s
+                      } else {
+                        onClose();
+                      }
+                    }}
                     className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105"
                   >
                     {completedSteps.length === (Array.isArray(recipe.instructions) ? recipe.instructions.length : 0) && completedSteps.length > 0
-                      ? '¡Buen provecho! 🍽️'
+                      ? (hasConsumed ? '✓ ¡Disfrutado!' : '¡Disfrutar! 🍽️')
                       : 'Cerrar'
                     }
                   </button>
