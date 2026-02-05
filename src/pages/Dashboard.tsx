@@ -176,15 +176,20 @@ const Dashboard: React.FC = () => {
         isOpen={showOnboarding} 
         onClose={() => {
           setShowOnboarding(false);
-          // Iniciar el tour después de cerrar el onboarding
-          console.log('🎯 OnboardingModal cerrado, iniciando tour en 1.5 segundos...');
+          // Iniciar el tour después de cerrar el onboarding con más delay
+          console.log('🎯 OnboardingModal cerrado, iniciando tour en 2 segundos...');
           setTimeout(() => {
             console.log('⏰ Llamando startTour()');
             // Verificar que el elemento scan-card existe antes de iniciar
             const scanCard = document.querySelector('#scan-card');
             console.log('📍 Elemento #scan-card encontrado:', scanCard);
-            startTour();
-          }, 1500);
+            if (scanCard) {
+              startTour();
+            } else {
+              console.warn('⚠️ Elemento #scan-card no encontrado, reintentando en 500ms...');
+              setTimeout(() => startTour(), 500);
+            }
+          }, 2000);
         }}
         userId={user?.id || ''}
       />
