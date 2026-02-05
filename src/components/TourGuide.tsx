@@ -30,8 +30,10 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       if (!step) return;
 
       const targetElement = document.querySelector(step.target);
+      console.log(`🎯 Tour buscando: ${step.target}, encontrado:`, targetElement);
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
+        console.log(`📐 Dimensiones del elemento:`, rect);
         // Redondear valores para mejor alineación
         const roundedRect = {
           top: Math.round(rect.top),
@@ -45,6 +47,8 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
         
         // Hacer scroll si el elemento no está visible
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        console.warn(`⚠️ Elemento ${step.target} no encontrado en el DOM`);
       }
     };
 
