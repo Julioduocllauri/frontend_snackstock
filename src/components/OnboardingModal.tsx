@@ -71,7 +71,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
         </div>
       ),
       title: "¿Necesitas Ayuda?",
-      description: "En cada página encontrarás un botón de ayuda flotante. Presiónalo cuando necesites repasar la guía.",
+      description: "En cada página encontrarás un botón de ayuda flotante. Presiónalo cuando la necesites.",
       tip: "Siempre disponible para ayudarte en cualquier momento"
     }
   ];
