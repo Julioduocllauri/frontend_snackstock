@@ -177,11 +177,14 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setShowOnboarding(false);
           // Iniciar el tour después de cerrar el onboarding
-          console.log('🎯 OnboardingModal cerrado, iniciando tour en 1 segundo...');
+          console.log('🎯 OnboardingModal cerrado, iniciando tour en 1.5 segundos...');
           setTimeout(() => {
             console.log('⏰ Llamando startTour()');
+            // Verificar que el elemento scan-section existe antes de iniciar
+            const scanSection = document.querySelector('#scan-section');
+            console.log('📍 Elemento #scan-section encontrado:', scanSection);
             startTour();
-          }, 1000);
+          }, 1500);
         }}
         userId={user?.id || ''}
       />
