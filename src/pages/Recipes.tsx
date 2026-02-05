@@ -32,6 +32,7 @@ const Recipes: React.FC = () => {
   } | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showRecipesTip, setShowRecipesTip] = useState(false);
+  const [recipeIngredients, setRecipeIngredients] = useState<Map<number, string[]>>(new Map()); // Mapa de receta ID -> ingredientes usados
 
   // Tour guiado - Se activa automáticamente si no se ha mostrado
   const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('recipes-tour', 1500);
@@ -165,11 +166,17 @@ const Recipes: React.FC = () => {
           ingredients: recipe.ingredients
         }));
         
+        // Guardar qué ingredientes se usaron para cada receta
+        const newMap = new Map(recipeIngredients);
+        newRecipes.forEach(recipe => {
+          if (recipe.id) {
+            newMap.set(recipe.id, ingredients);
+          }
+        });
+        setRecipeIngredients(newMap);
+        
         setRecipes([...newRecipes, ...recipes]);
         setSelectedIngredients([]);
-        
-        // Registrar consumo y eliminar productos del inventario
-        await consumeIngredientsFromInventory(ingredients);
         
         setToast({ message: `¡${newRecipes.length} recetas generadas exitosamente!`, type: 'success' });
       }
@@ -197,6 +204,17 @@ const Recipes: React.FC = () => {
         message: !recipe.saved ? 'Receta guardada' : 'Receta removida de guardados', 
         type: 'success' 
       });
+    }
+  };
+
+  const handleRecipeComplete = async (ingredientsUsed: string[]) => {
+    try {
+      // Registrar consumo y eliminar productos del inventario
+      await consumeIngredientsFromInventory(ingredientsUsed);
+      setToast({ message: '¡Receta completada! Productos consumidos del inventario', type: 'success' });
+    } catch (error) {
+      console.error('Error al consumir ingredientes:', error);
+      setToast({ message: 'Error al actualizar inventario', type: 'error' });
     }
   };
 
@@ -437,6 +455,8 @@ const Recipes: React.FC = () => {
         recipe={selectedRecipe}
         isLoading={false}
         onClose={() => setSelectedRecipe(null)}
+        usedIngredients={selectedRecipe?.id ? recipeIngredients.get(selectedRecipe.id) : []}
+        onComplete={handleRecipeComplete}
       />
 
       {/* Toast Notifications */}
