@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { X, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
+import { X, ArrowRight, ArrowLeft, Sparkles, MoveDown } from 'lucide-react';
 
 export interface TourStep {
   target: string; // selector del elemento a destacar
@@ -151,35 +151,29 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
 
   return (
     <>
-      {/* Overlay oscuro - opacidad reducida */}
+      {/* Overlay oscuro más suave */}
       <div 
         className="fixed inset-0 bg-black transition-opacity duration-300"
         style={{ 
-          opacity: 0.4,
+          opacity: 0.3,
           zIndex: 10000,
           pointerEvents: 'none'
         }}
       />
 
-      {/* Highlight del elemento */}
+      {/* Flecha apuntando al elemento en lugar de recuadro */}
       {targetRect && (
-        <>
-          {/* Borde animado - ahora primero para mejor visibilidad */}
-          <div
-            className="fixed transition-all duration-300 animate-pulse-border"
-            style={{
-              top: `${targetRect.top - padding}px`,
-              left: `${targetRect.left - padding}px`,
-              width: `${targetRect.width + padding * 2}px`,
-              height: `${targetRect.height + padding * 2}px`,
-              border: '3px solid #3b82f6',
-              borderRadius: '16px',
-              zIndex: 10002,
-              pointerEvents: 'none',
-              boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.3), 0 0 0 9999px rgba(0, 0, 0, 0.4)'
-            }}
-          />
-        </>
+        <div
+          className="fixed transition-all duration-300 animate-bounce"
+          style={{
+            top: step.position === 'top' ? `${targetRect.bottom + 20}px` : `${targetRect.top - 60}px`,
+            left: `${targetRect.left + targetRect.width / 2 - 20}px`,
+            zIndex: 10001,
+            pointerEvents: 'none'
+          }}
+        >
+          <MoveDown className="w-10 h-10 text-blue-500" strokeWidth={3} />
+        </div>
       )}
 
       {/* Tooltip con información */}
