@@ -15,8 +15,14 @@ export interface Product {
 }
 
 export interface Recipe {
+  id?: number;
   title: string;
   ingredients: string[];
-  instructions: string[];
-  prepTime: string;
+  instructions: string[] | string;
+  prepTime?: string;
+  time?: string;
+  mainIngredient?: string;
+  servings?: number;
+  difficulty?: string;
+  saved?: boolean;
 }
