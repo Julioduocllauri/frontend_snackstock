@@ -32,7 +32,16 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       const targetElement = document.querySelector(step.target);
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-        setTargetRect(rect);
+        // Redondear valores para mejor alineación
+        const roundedRect = {
+          top: Math.round(rect.top),
+          left: Math.round(rect.left),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+          right: Math.round(rect.right),
+          bottom: Math.round(rect.bottom)
+        } as DOMRect;
+        setTargetRect(roundedRect);
         
         // Hacer scroll si el elemento no está visible
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -52,7 +61,7 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
   if (!isActive || !steps.length) return null;
 
   const step = steps[currentStep];
-  const padding = step.highlightPadding || 12; // Aumentado de 8 a 12
+  const padding = step.highlightPadding || 8; // Reducido a 8px para mejor ajuste
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -140,31 +149,19 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       {/* Highlight del elemento */}
       {targetRect && (
         <>
-          {/* Recorte para el spotlight */}
+          {/* Borde animado - ahora primero para mejor visibilidad */}
           <div
-            className="fixed transition-all duration-300 rounded-xl"
+            className="fixed transition-all duration-300 animate-pulse-border"
             style={{
               top: `${targetRect.top - padding}px`,
               left: `${targetRect.left - padding}px`,
               width: `${targetRect.width + padding * 2}px`,
               height: `${targetRect.height + padding * 2}px`,
-              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.4)',
-              zIndex: 10001,
-              pointerEvents: 'none'
-            }}
-          />
-          
-          {/* Borde animado - más grueso y con mejor ajuste */}
-          <div
-            className="fixed border-[3px] border-blue-500 rounded-xl transition-all duration-300 animate-pulse-border"
-            style={{
-              top: `${targetRect.top - padding}px`,
-              left: `${targetRect.left - padding}px`,
-              width: `${targetRect.width + padding * 2}px`,
-              height: `${targetRect.height + padding * 2}px`,
-              zIndex: 10001,
+              border: '3px solid #3b82f6',
+              borderRadius: '16px',
+              zIndex: 10002,
               pointerEvents: 'none',
-              boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.2)'
+              boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.3), 0 0 0 9999px rgba(0, 0, 0, 0.4)'
             }}
           />
         </>
