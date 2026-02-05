@@ -198,14 +198,6 @@ const Dashboard: React.FC = () => {
               {products.length}
             </span>
           </h2>
-          <div className="flex gap-2">
-            <button className="p-2 bg-white rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
-              <Filter size={18}/>
-            </button>
-            <button className="p-2 bg-white rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
-              <Plus size={18}/>
-            </button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
