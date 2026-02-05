@@ -38,13 +38,13 @@ const Dashboard: React.FC = () => {
       target: '#upload-button',
       title: 'Escanea tu boleta',
       description: 'Presiona aquí para tomar una foto de tu boleta del supermercado. Nuestra IA detectará automáticamente todos los productos y los agregará a tu despensa.',
-      position: 'bottom'
+      position: 'right'
     },
     {
       target: '#pantry-list',
       title: 'Tu despensa',
       description: 'Aquí verás todos tus productos organizados. Puedes filtrarlos, buscarlos y ver cuáles están próximos a vencer. Una vez que agregues productos, aparecerán como tarjetas que puedes gestionar.',
-      position: 'top'
+      position: 'bottom'
     }
   ];
 
