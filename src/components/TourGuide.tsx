@@ -34,6 +34,14 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
         console.log(`📐 Dimensiones del elemento:`, rect);
+        
+        // Verificar que el elemento tenga dimensiones válidas
+        if (rect.width === 0 || rect.height === 0) {
+          console.warn(`⚠️ Elemento ${step.target} tiene dimensiones 0, reintentando...`);
+          setTimeout(updatePosition, 100);
+          return;
+        }
+        
         // Redondear valores para mejor alineación
         const roundedRect = {
           top: Math.round(rect.top),
@@ -52,11 +60,14 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       }
     };
 
-    updatePosition();
+    // Esperar un poco antes de la primera actualización para asegurar que el DOM esté listo
+    const initialTimeout = setTimeout(updatePosition, 100);
+    
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition);
 
     return () => {
+      clearTimeout(initialTimeout);
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition);
     };
