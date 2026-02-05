@@ -102,45 +102,32 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
     onSkip();
   };
 
-  // Calcular posición del tooltip - más cerca del elemento
+  // Calcular posición del tooltip - justo debajo de la flecha
   const getTooltipPosition = (): React.CSSProperties => {
     if (!targetRect) return {};
 
     const position = step.position || 'bottom';
     const tooltipWidth = 400;
-    const tooltipHeight = 220;
-    const gap = 80; // Más separación para la flecha
+    const gap = 20; // Gap pequeño entre flecha y tooltip
 
     let top = 0;
-    let left = 0;
+    let left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2);
 
     switch (position) {
       case 'top':
-        top = targetRect.top - tooltipHeight - gap;
-        left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2);
+        // Tooltip arriba del elemento
+        top = targetRect.top - 320;
         break;
       case 'bottom':
-        top = targetRect.bottom + gap;
-        left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2);
-        break;
-      case 'left':
-        top = targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2);
-        left = targetRect.left - tooltipWidth - gap;
-        break;
-      case 'right':
-        top = targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2);
-        left = targetRect.right + gap;
+        // Tooltip debajo de la flecha
+        top = targetRect.top + 10;
         break;
     }
 
-    // Ajustar si se sale de la pantalla
+    // Ajustar si se sale de la pantalla horizontalmente
     if (left < 10) left = 10;
     if (left + tooltipWidth > window.innerWidth - 10) {
       left = window.innerWidth - tooltipWidth - 10;
-    }
-    if (top < 10) top = 10;
-    if (top + tooltipHeight > window.innerHeight - 10) {
-      top = window.innerHeight - tooltipHeight - 10;
     }
 
     return {
