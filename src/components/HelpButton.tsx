@@ -46,8 +46,8 @@ const HelpButton: React.FC<HelpButtonProps> = ({ onRestartTour, tourKey }) => {
               <RefreshCw className="w-5 h-5 text-white group-hover:rotate-180 transition-transform duration-500" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-800">Ver guía de nuevo</p>
-              <p className="text-xs text-slate-500">Reiniciar el tour</p>
+              <p className="text-sm font-semibold text-slate-800">Guía</p>
+              <p className="text-xs text-slate-500">Ver tutorial nuevamente</p>
             </div>
           </button>
         </div>

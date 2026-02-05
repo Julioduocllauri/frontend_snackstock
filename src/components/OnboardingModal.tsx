@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Package, Camera, ChefHat, BarChart3, ArrowRight, Sparkles, ShoppingBag } from 'lucide-react';
+import { X, Package, Camera, ChefHat, BarChart3, ArrowRight, Sparkles, ShoppingBag, HelpCircle } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -63,6 +63,16 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, user
       title: "Analiza tus Hábitos",
       description: "Revisa tus estadísticas de consumo, calorías, productos favoritos y descubre patrones en tu alimentación.",
       tip: "Reduce el desperdicio identificando productos que no consumes"
+    },
+    {
+      icon: (
+        <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform">
+          <HelpCircle className="w-16 h-16 text-white" strokeWidth={2.5} />
+        </div>
+      ),
+      title: "¿Necesitas Ayuda?",
+      description: "En cada página encontrarás un botón de ayuda flotante. Presiónalo cuando necesites repasar la guía.",
+      tip: "Siempre disponible para ayudarte en cualquier momento"
     }
   ];
 
