@@ -26,14 +26,14 @@ const Inventory: React.FC = () => {
   const [showInventoryTip, setShowInventoryTip] = useState(false);
 
   // Tour guiado - Se activa automáticamente si no se ha mostrado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('inventory-tour', 1500);
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('inventory-tour', 0);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [
     {
       target: '#search-bar',
       title: 'Buscar productos',
-      description: 'Usa esta barra de búsqueda para encontrar rápidamente cualquier producto de tu inventario por su nombre.',
+      description: 'Usa la barra de búsqueda para encontrar rápidamente cualquier producto de tu inventario por su nombre.',
       position: 'bottom'
     },
     {
@@ -45,7 +45,7 @@ const Inventory: React.FC = () => {
     {
       target: '#add-button',
       title: 'Agregar productos',
-      description: 'Presiona aquí para agregar productos manualmente a tu inventario. Útil para cuando no puedes escanear una boleta.',
+      description: 'Presiona el botón + para agregar productos manualmente a tu inventario. Útil para cuando no puedes escanear una boleta.',
       position: 'left'
     },
     {
@@ -115,42 +115,42 @@ const Inventory: React.FC = () => {
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🔵 handleSaveProduct iniciado');
-    console.log('📦 Producto:', editModal.product);
+    console.log(' handleSaveProduct iniciado');
+    console.log(' Producto:', editModal.product);
     
     if (!editModal.product) {
-      console.log('❌ No hay producto para guardar');
+      console.log(' No hay producto para guardar');
       return;
     }
 
     try {
-      console.log('💾 Guardando producto...');
+      console.log(' Guardando producto...');
       
       // Preparar datos solo con campos que se pueden guardar
       const { status, days_left, ...productData } = editModal.product;
-      console.log('📤 Datos a enviar:', productData);
+      console.log(' Datos a enviar:', productData);
       
       if (editModal.isNew) {
-        console.log('➕ Creando nuevo producto');
+        console.log('Creando nuevo producto');
         const result = await createProduct(productData);
-        console.log('✅ Producto creado:', result);
+        console.log(' Producto creado:', result);
         setToast({ message: 'Producto agregado exitosamente', type: 'success' });
       } else {
         console.log('✏️ Actualizando producto ID:', editModal.product.id);
         const result = await updateProduct(editModal.product.id!, productData);
-        console.log('✅ Producto actualizado:', result);
+        console.log(' Producto actualizado:', result);
         setToast({ message: 'Producto actualizado exitosamente', type: 'success' });
       }
       console.log('🔄 Recargando datos...');
       await loadData();
-      console.log('✅ Datos recargados');
+      console.log(' Datos recargados');
     } catch (error) {
-      console.error('❌ Error al guardar:', error);
+      console.error(' Error al guardar:', error);
       setToast({ message: 'Error al guardar el producto', type: 'error' });
     } finally {
-      console.log('🚪 Cerrando modal...');
+      console.log(' Cerrando modal...');
       setEditModal({ product: null, isNew: false });
-      console.log('✅ Modal cerrado');
+      console.log(' Modal cerrado');
     }
   };
 
@@ -183,7 +183,7 @@ const Inventory: React.FC = () => {
           setShowInventoryTip(false);
           localStorage.setItem('inventoryTipShown', 'true');
         }}
-        title="¿Cómo usar el inventario? 📦"
+        title="¿Cómo usar el inventario? "
         description="Aquí verás todos tus productos. Puedes EDITAR haciendo clic en el lápiz, o ELIMINAR con la X. Cuando consumas un producto, márcalo como 'Consumido' para que se registre en tus estadísticas. Usa los filtros para buscar más fácil."
         icon={<Package className="w-6 h-6" />}
         position="center"
