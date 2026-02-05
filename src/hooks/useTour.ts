@@ -7,7 +7,8 @@ export const useTour = (tourKey: string, delay: number = 1000) => {
     // Verificar si el tour ya fue completado
     const tourCompleted = localStorage.getItem(tourKey);
     
-    if (!tourCompleted) {
+    // Si delay es 0, no activar automáticamente (debe ser manual)
+    if (!tourCompleted && delay > 0) {
       // Esperar un poco antes de mostrar el tour
       const timer = setTimeout(() => {
         setIsActive(true);

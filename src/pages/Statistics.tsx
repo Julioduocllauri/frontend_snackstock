@@ -13,8 +13,8 @@ const Statistics: React.FC = () => {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [showStatisticsTip, setShowStatisticsTip] = useState(false);
 
-  // Tour guiado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('statistics-tour', 1000);
+  // Tour guiado - Se activa automáticamente si no se ha mostrado
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('statistics-tour', 1500);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [
