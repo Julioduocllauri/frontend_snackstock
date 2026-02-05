@@ -22,7 +22,7 @@ const ScanSection: React.FC<ScanSectionProps> = ({ onScan, isScanning }) => {
   };
   
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-[2.5rem] p-8 md:p-12 text-white shadow-xl shadow-blue-200">
+    <section id="scan-card" className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-[2.5rem] p-8 md:p-12 text-white shadow-xl shadow-blue-200">
       <div className="relative z-10 max-w-lg">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
           Mantén tu despensa fresca.
@@ -33,7 +33,7 @@ const ScanSection: React.FC<ScanSectionProps> = ({ onScan, isScanning }) => {
             : "Escanea tus boletas para registrar tus compras automáticamente."}
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4" id="scan-buttons">
           {/* Botón de Cámara (solo móvil) */}
           {isMobile && (
             <>
