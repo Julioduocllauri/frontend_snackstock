@@ -63,7 +63,7 @@ const Recipes: React.FC = () => {
     {
       target: '#generate-button',
       title: 'Generar recetas',
-      description: 'Presiona este botón para que la IA te sugiera 3 recetas deliciosas usando los ingredientes seleccionados.',
+      description: 'Presiona el botón para que la IA te sugiera 3 recetas deliciosas usando los ingredientes seleccionados.',
       position: 'left'
     }
   ];
