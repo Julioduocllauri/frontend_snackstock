@@ -4,7 +4,6 @@ import ProductCard from '../components/ProductCard';
 import ScanSection from '../components/ScanSection';
 import RecipeModal from '../components/RecipeModal';
 import Toast from '../components/Toast';
-import ConfirmDialog from '../components/ConfirmDialog';
 import OnboardingModal from '../components/OnboardingModal';
 import ContextualTip from '../components/ContextualTip';
 import TourGuide, { TourStep } from '../components/TourGuide';
@@ -22,11 +21,6 @@ const Dashboard: React.FC = () => {
   const [recipes, setRecipes] = useState<any[]>([]); // Para las 3 recetas generadas
   const [isGenerating, setIsGenerating] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null);
-  const [confirmDialog, setConfirmDialog] = useState<{ 
-    title: string; 
-    message: string; 
-    ingredient: string;
-  } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Tour guiado - Sin delay automático, se activará manualmente
@@ -112,40 +106,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleCook = (ingredient: string) => {
-    setConfirmDialog({
-      title: 'Generar Receta',
-      message: `¿Quieres generar una receta con ${ingredient}?`,
-      ingredient
-    });
-  };
 
-  const handleConfirmCook = async () => {
-    if (!confirmDialog) return;
-    
-    const ingredient = confirmDialog.ingredient;
-    setConfirmDialog(null);
-    
-    try {
-      setIsGenerating(true);
-      const generatedRecipes = await generateRecipeAI(ingredient, 3); // Generar 3 recetas
-      
-      // Mapear las recetas con la estructura correcta
-      const mappedRecipes = generatedRecipes.map((r: any) => ({
-        ...r,
-        prepTime: r.time || r.prepTime || '30 min',
-        ingredients: r.ingredients || [],
-        instructions: r.instructions || []
-      }));
-      
-      setRecipes(mappedRecipes);
-      setToast({ message: '¡3 recetas generadas! Elige una para ver los detalles.', type: 'success' });
-    } catch (error) {
-      setToast({ message: 'Error generando receta. Revisa que el Backend tenga la Key de Groq.', type: 'error' });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
@@ -211,7 +172,6 @@ const Dashboard: React.FC = () => {
             <ProductCard
               key={product.id || Math.random()}
               product={product}
-              onCook={handleCook}
             />
           ))}
         </div>
@@ -275,19 +235,6 @@ const Dashboard: React.FC = () => {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
-        />
-      )}
-
-      {/* Confirm Dialog */}
-      {confirmDialog && (
-        <ConfirmDialog
-          title={confirmDialog.title}
-          message={confirmDialog.message}
-          onConfirm={handleConfirmCook}
-          onCancel={() => setConfirmDialog(null)}
-          confirmText="Aceptar"
-          cancelText="Cancelar"
-          type="info"
         />
       )}
     </div>
