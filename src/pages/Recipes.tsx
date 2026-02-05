@@ -35,7 +35,7 @@ const Recipes: React.FC = () => {
   const [recipeIngredients, setRecipeIngredients] = useState<Map<number, string[]>>(new Map()); // Mapa de receta ID -> ingredientes usados
 
   // Tour guiado - Se activa automáticamente si no se ha mostrado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('recipes-tour', 1500);
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('recipes-tour', 0);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [
@@ -62,6 +62,28 @@ const Recipes: React.FC = () => {
   useEffect(() => {
     loadCriticalProducts();
     
+    // Cargar recetas guardadas desde localStorage
+    const savedRecipes = localStorage.getItem('savedRecipes');
+    const savedRecipeIngredients = localStorage.getItem('recipeIngredients');
+    
+    if (savedRecipes) {
+      try {
+        const parsedRecipes = JSON.parse(savedRecipes);
+        setRecipes(parsedRecipes);
+      } catch (error) {
+        console.error('Error al cargar recetas guardadas:', error);
+      }
+    }
+    
+    if (savedRecipeIngredients) {
+      try {
+        const parsedMap = JSON.parse(savedRecipeIngredients);
+        setRecipeIngredients(new Map(Object.entries(parsedMap).map(([k, v]) => [Number(k), v as string[]])));
+      } catch (error) {
+        console.error('Error al cargar ingredientes de recetas:', error);
+      }
+    }
+    
     // Mostrar tip de recetas en la primera visita
     const recipesTipShown = localStorage.getItem('recipesTipShown');
     if (!recipesTipShown) {
@@ -73,6 +95,21 @@ const Recipes: React.FC = () => {
     setShowRecipesTip(false);
     localStorage.setItem('recipesTipShown', 'true');
   };
+
+  // Guardar recetas en localStorage cuando cambien
+  useEffect(() => {
+    if (recipes.length > 0) {
+      localStorage.setItem('savedRecipes', JSON.stringify(recipes));
+    }
+  }, [recipes]);
+
+  // Guardar mapa de ingredientes en localStorage cuando cambie
+  useEffect(() => {
+    if (recipeIngredients.size > 0) {
+      const obj = Object.fromEntries(recipeIngredients);
+      localStorage.setItem('recipeIngredients', JSON.stringify(obj));
+    }
+  }, [recipeIngredients]);
 
   const loadCriticalProducts = async () => {
     try {
@@ -189,9 +226,10 @@ const Recipes: React.FC = () => {
   };
 
   const toggleSave = (recipeId: number) => {
-    setRecipes(recipes.map(r => 
+    const updatedRecipes = recipes.map(r => 
       r.id === recipeId ? { ...r, saved: !r.saved } : r
-    ));
+    );
+    setRecipes(updatedRecipes);
     
     // Si el modal está abierto con esta receta, actualizarlo también
     if (selectedRecipe && selectedRecipe.id === recipeId) {

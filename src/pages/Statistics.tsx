@@ -14,7 +14,7 @@ const Statistics: React.FC = () => {
   const [showStatisticsTip, setShowStatisticsTip] = useState(false);
 
   // Tour guiado - Se activa automáticamente si no se ha mostrado
-  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('statistics-tour', 1500);
+  const { isActive: isTourActive, completeTour, skipTour, startTour } = useTour('statistics-tour', 0);
 
   // Pasos del tour
   const tourSteps: TourStep[] = [

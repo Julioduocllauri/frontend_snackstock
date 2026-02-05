@@ -30,14 +30,14 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       if (!step) return;
 
       const targetElement = document.querySelector(step.target);
-      console.log(`🎯 Tour buscando: ${step.target}, encontrado:`, targetElement);
+      console.log(` Tour buscando: ${step.target}, encontrado:`, targetElement);
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-        console.log(`📐 Dimensiones del elemento:`, rect);
+        console.log(` Dimensiones del elemento:`, rect);
         
         // Verificar que el elemento tenga dimensiones válidas
         if (rect.width === 0 || rect.height === 0) {
-          console.warn(`⚠️ Elemento ${step.target} tiene dimensiones 0, reintentando...`);
+          console.warn(` Elemento ${step.target} tiene dimensiones 0, reintentando...`);
           setTimeout(updatePosition, 100);
           return;
         }
@@ -56,7 +56,7 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
         // Hacer scroll si el elemento no está visible
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
-        console.warn(`⚠️ Elemento ${step.target} no encontrado en el DOM`);
+        console.warn(` Elemento ${step.target} no encontrado en el DOM`);
       }
     };
 
@@ -104,10 +104,11 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
 
   // Calcular posición del tooltip - siempre centrado
   const getTooltipPosition = (): React.CSSProperties => {
-    const tooltipWidth = 500;
+    const isMobile = window.innerWidth < 768;
+    const tooltipWidth = isMobile ? window.innerWidth - 32 : 500; // 16px padding en cada lado para móvil
     
     // Centrar horizontal y verticalmente
-    const left = (window.innerWidth / 2) - (tooltipWidth / 2);
+    const left = isMobile ? 16 : (window.innerWidth / 2) - (tooltipWidth / 2);
     const top = (window.innerHeight / 2) - 150; // Centrado vertical
 
     return {
@@ -165,7 +166,7 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
         className="bg-white rounded-xl shadow-2xl animate-fadeIn"
         style={getTooltipPosition()}
       >
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2">

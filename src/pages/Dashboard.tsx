@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
   // Manejar onboarding y tooltips - SIMPLIFICADO
   useEffect(() => {
     if (!user) {
-      console.log('⚠️ No hay usuario todavía, esperando...');
+      console.log('No hay usuario todavía, esperando...');
       return;
     }
 
@@ -65,22 +65,13 @@ const Dashboard: React.FC = () => {
 
     // Si NO ha completado onboarding, mostrarlo
     if (user.onboarding_completed === false || user.onboarding_completed === undefined) {
-      console.log('🎯 Mostrando modal de onboarding...');
+      console.log(' Mostrando modal de onboarding...');
       setTimeout(() => {
-        console.log('⏰ Ejecutando setTimeout para mostrar onboarding');
+        console.log(' Ejecutando setTimeout para mostrar onboarding');
         setShowOnboarding(true);
       }, 500);
-    } else {
-      // Si ya completó onboarding, iniciar el tour automáticamente si no lo ha visto
-      const tourCompleted = localStorage.getItem('dashboard-tour');
-      if (!tourCompleted) {
-        console.log('🎯 Usuario con onboarding completado, iniciando tour automático...');
-        setTimeout(() => {
-          startTour();
-        }, 1500);
-      }
     }
-  }, [user, startTour]);
+  }, [user]);
 
   const loadData = async () => {
     setLoading(true);
@@ -125,23 +116,7 @@ const Dashboard: React.FC = () => {
       {/* ONBOARDING MODAL */}
       <OnboardingModal 
         isOpen={showOnboarding} 
-        onClose={() => {
-          setShowOnboarding(false);
-          // Iniciar el tour después de cerrar el onboarding con más delay
-          console.log('🎯 OnboardingModal cerrado, iniciando tour en 2 segundos...');
-          setTimeout(() => {
-            console.log('⏰ Llamando startTour()');
-            // Verificar que el elemento upload-button existe antes de iniciar
-            const uploadButton = document.querySelector('#upload-button');
-            console.log('📍 Elemento #upload-button encontrado:', uploadButton);
-            if (uploadButton) {
-              startTour();
-            } else {
-              console.warn('⚠️ Elemento #upload-button no encontrado, reintentando en 500ms...');
-              setTimeout(() => startTour(), 500);
-            }
-          }, 2000);
-        }}
+        onClose={() => setShowOnboarding(false)}
         userId={user?.id || ''}
       />
 
@@ -192,8 +167,8 @@ const Dashboard: React.FC = () => {
               >
                 <h3 className="text-xl font-bold text-slate-800 mb-2">{r.title}</h3>
                 <div className="text-sm text-slate-600 space-y-1">
-                  <p>⏱️ {r.time || r.prepTime}</p>
-                  <p>👥 {r.servings} personas</p>
+                  <p> {r.time || r.prepTime}</p>
+                  <p> {r.servings} personas</p>
                   <p className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full inline-block text-xs font-semibold">
                     {r.difficulty}
                   </p>
