@@ -52,7 +52,7 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
   if (!isActive || !steps.length) return null;
 
   const step = steps[currentStep];
-  const padding = step.highlightPadding || 8;
+  const padding = step.highlightPadding || 12; // Aumentado de 8 a 12
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -127,11 +127,11 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
 
   return (
     <>
-      {/* Overlay oscuro */}
+      {/* Overlay oscuro - opacidad reducida */}
       <div 
         className="fixed inset-0 bg-black transition-opacity duration-300"
         style={{ 
-          opacity: 0.6,
+          opacity: 0.4,
           zIndex: 10000,
           pointerEvents: 'none'
         }}
@@ -142,28 +142,29 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
         <>
           {/* Recorte para el spotlight */}
           <div
-            className="fixed transition-all duration-300 rounded-lg"
+            className="fixed transition-all duration-300 rounded-xl"
             style={{
               top: `${targetRect.top - padding}px`,
               left: `${targetRect.left - padding}px`,
               width: `${targetRect.width + padding * 2}px`,
               height: `${targetRect.height + padding * 2}px`,
-              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)',
+              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.4)',
               zIndex: 10001,
               pointerEvents: 'none'
             }}
           />
           
-          {/* Borde animado */}
+          {/* Borde animado - más grueso y con mejor ajuste */}
           <div
-            className="fixed border-4 border-blue-500 rounded-lg transition-all duration-300 animate-pulse-border"
+            className="fixed border-[3px] border-blue-500 rounded-xl transition-all duration-300 animate-pulse-border"
             style={{
               top: `${targetRect.top - padding}px`,
               left: `${targetRect.left - padding}px`,
               width: `${targetRect.width + padding * 2}px`,
               height: `${targetRect.height + padding * 2}px`,
               zIndex: 10001,
-              pointerEvents: 'none'
+              pointerEvents: 'none',
+              boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.2)'
             }}
           />
         </>
