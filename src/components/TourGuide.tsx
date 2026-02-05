@@ -102,14 +102,14 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
     onSkip();
   };
 
-  // Calcular posición del tooltip
+  // Calcular posición del tooltip - más cerca del elemento
   const getTooltipPosition = (): React.CSSProperties => {
     if (!targetRect) return {};
 
     const position = step.position || 'bottom';
-    const tooltipWidth = 350;
-    const tooltipHeight = 200;
-    const gap = 20;
+    const tooltipWidth = 400;
+    const tooltipHeight = 220;
+    const gap = 80; // Más separación para la flecha
 
     let top = 0;
     let left = 0;
@@ -139,6 +139,9 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       left = window.innerWidth - tooltipWidth - 10;
     }
     if (top < 10) top = 10;
+    if (top + tooltipHeight > window.innerHeight - 10) {
+      top = window.innerHeight - tooltipHeight - 10;
+    }
 
     return {
       position: 'fixed',
@@ -146,6 +149,34 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
       left: `${left}px`,
       width: `${tooltipWidth}px`,
       zIndex: 10002
+    };
+  };
+
+  // Calcular posición de la flecha según la posición del tooltip
+  const getArrowPosition = (): React.CSSProperties => {
+    if (!targetRect) return {};
+
+    const position = step.position || 'bottom';
+    let top = 0;
+    let left = targetRect.left + targetRect.width / 2 - 20;
+
+    switch (position) {
+      case 'top':
+        // Flecha apunta hacia abajo (debajo del elemento)
+        top = targetRect.bottom + 10;
+        break;
+      case 'bottom':
+        // Flecha apunta hacia arriba (encima del elemento)
+        top = targetRect.top - 50;
+        break;
+    }
+
+    return {
+      position: 'fixed',
+      top: `${top}px`,
+      left: `${left}px`,
+      zIndex: 10001,
+      pointerEvents: 'none'
     };
   };
 
@@ -161,18 +192,17 @@ const TourGuide: React.FC<TourGuideProps> = ({ steps, isActive, onComplete, onSk
         }}
       />
 
-      {/* Flecha apuntando al elemento en lugar de recuadro */}
+      {/* Flecha apuntando al elemento */}
       {targetRect && (
         <div
           className="fixed transition-all duration-300 animate-bounce"
-          style={{
-            top: step.position === 'top' ? `${targetRect.bottom + 20}px` : `${targetRect.top - 60}px`,
-            left: `${targetRect.left + targetRect.width / 2 - 20}px`,
-            zIndex: 10001,
-            pointerEvents: 'none'
-          }}
+          style={getArrowPosition()}
         >
-          <MoveDown className="w-10 h-10 text-blue-500" strokeWidth={3} />
+          {step.position === 'bottom' ? (
+            <MoveDown className="w-10 h-10 text-blue-500" strokeWidth={3} />
+          ) : (
+            <MoveDown className="w-10 h-10 text-blue-500 rotate-180" strokeWidth={3} />
+          )}
         </div>
       )}
 
