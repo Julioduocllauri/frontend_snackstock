@@ -65,7 +65,7 @@ const ScanSection: React.FC<ScanSectionProps> = ({ onScan, isScanning }) => {
             className="inline-flex items-center justify-center gap-3 px-6 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-blue-50 transition-all shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50"
           >
             <Upload size={22} />
-            <span>{isScanning ? "Analizando..." : isMobile ? "Galería" : "Subir Imagen"}</span>
+            <span>{isScanning ? "Analizando..." : isMobile ? "Galería" : "Escanear Boleta"}</span>
           </button>
           <input 
             ref={fileInputRef}
