@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
   // Pasos del tour
   const tourSteps: TourStep[] = [
     {
-      target: '#scan-card',
+      target: '#upload-button',
       title: 'Escanea tu boleta',
       description: 'Presiona aquí para tomar una foto de tu boleta del supermercado. Nuestra IA detectará automáticamente todos los productos y los agregará a tu despensa.',
       position: 'bottom'
@@ -170,13 +170,13 @@ const Dashboard: React.FC = () => {
           console.log('🎯 OnboardingModal cerrado, iniciando tour en 2 segundos...');
           setTimeout(() => {
             console.log('⏰ Llamando startTour()');
-            // Verificar que el elemento scan-card existe antes de iniciar
-            const scanCard = document.querySelector('#scan-card');
-            console.log('📍 Elemento #scan-card encontrado:', scanCard);
-            if (scanCard) {
+            // Verificar que el elemento upload-button existe antes de iniciar
+            const uploadButton = document.querySelector('#upload-button');
+            console.log('📍 Elemento #upload-button encontrado:', uploadButton);
+            if (uploadButton) {
               startTour();
             } else {
-              console.warn('⚠️ Elemento #scan-card no encontrado, reintentando en 500ms...');
+              console.warn('⚠️ Elemento #upload-button no encontrado, reintentando en 500ms...');
               setTimeout(() => startTour(), 500);
             }
           }, 2000);
