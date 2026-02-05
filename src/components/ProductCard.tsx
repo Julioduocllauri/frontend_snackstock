@@ -3,10 +3,9 @@ import { Product } from '../types';
 
 interface ProductCardProps {
   product: Product;
-  onCook?: (productName: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onCook }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const getStatusStyles = (status: string) => {
     switch (status) {
       case 'red': return 'bg-red-100 text-red-600 border-red-200';
@@ -45,20 +44,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onCook }) => {
         <p className="text-sm text-slate-500">
           Vence en {product.days_left} días
         </p>
-      </div>
-
-      <div className="mt-4 flex gap-2 z-10">
-        {product.status === 'red' && onCook && (
-          <button 
-            onClick={() => onCook(product.name)}
-            className="flex-1 bg-gradient-to-r from-orange-400 to-pink-500 text-white py-2 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:opacity-90 transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Cocinar
-          </button>
-        )}
       </div>
     </div>
   );
