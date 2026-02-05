@@ -506,7 +506,7 @@ const Recipes: React.FC = () => {
           onConfirm={handleGenerateRecipe}
           onCancel={() => {
             setConfirmDialog(null);
-            setSelectedIngredient('');
+            setSelectedIngredients([]);
           }}
           confirmText="Generar"
           cancelText="Cancelar"
