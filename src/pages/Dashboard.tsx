@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
       {/* TOUR GUIDE */}
       <TourGuide
         steps={tourSteps}
-        isActive={isTourActive && !showOnboarding && products.length > 0}
+        isActive={isTourActive && !showOnboarding}
         onComplete={completeTour}
         onSkip={skipTour}
         tourKey="dashboard-tour"

@@ -20,9 +20,13 @@ export const useTour = (tourKey: string, delay: number = 1000) => {
 
   const startTour = () => {
     const tourCompleted = localStorage.getItem(tourKey);
+    console.log(`🔍 startTour llamado para ${tourKey}, completado:`, tourCompleted);
     // Solo iniciar si no ha sido completado
     if (!tourCompleted) {
+      console.log(`✅ Activando tour ${tourKey}`);
       setIsActive(true);
+    } else {
+      console.log(`⏭️ Tour ${tourKey} ya fue completado, no se muestra`);
     }
   };
 
